@@ -5,17 +5,82 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Caisse Snack</title>
 <style>
-body { font-family: Arial, sans-serif; background:#111; color:white; text-align:center; }
-button { font-size:16px; padding:10px; margin:5px; border:2px solid transparent; border-radius:10px; width:140px; cursor:pointer; }
-button.product { background:#e67e22; }
-button.option { background:#3498db; }
-button.add-order, button.reset { background:#e74c3c; color:white; }
-.selected { border:3px solid yellow; box-shadow:0 0 10px yellow; }
-.total, .grand-total { font-size:32px; margin:10px; }
-.hidden { display:none; }
-.section { margin-top:20px; }
-.cart-item { display:flex; justify-content:center; align-items:center; }
-.cart-item button { width:auto; margin-left:10px; background:#c0392b; }
+/* Fond général et texte */
+body { 
+    font-family: Arial, sans-serif; 
+    background: #fff8f0;   /* fond du site */
+    color: #4c464e;        /* texte principal */
+    text-align: center; 
+}
+
+/* Tous les boutons choix */
+button { 
+    font-size: 16px; 
+    padding: 10px; 
+    margin: 5px; 
+    border: 2px solid transparent; 
+    border-radius: 10px; 
+    width: 140px; 
+    cursor: pointer; 
+    background: #b9e3ed;   /* couleur des choix */
+    color: #4c464e;         /* texte des boutons */
+    transition: 0.3s;       /* effet doux */
+}
+
+/* Bouton sélectionné */
+button.selected { 
+    background: #fec1c3;   /* couleur quand sélectionné */
+    border: 3px solid #fec1c3;
+    box-shadow: 0 0 10px #fec1c3;
+}
+
+/* Total et grand total */
+.total, .grand-total { 
+    font-size: 32px; 
+    margin: 10px; 
+}
+
+/* Masquer les sections quand nécessaire */
+.hidden { display: none; }
+
+/* Espacement des sections */
+.section { margin-top: 20px; }
+
+/* Articles dans la commande */
+.cart-item { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+/* Bouton supprimer dans la commande */
+.cart-item button { 
+    width: auto; 
+    margin-left: 10px; 
+    background: #c0392b; 
+    color: white; 
+    border-radius: 5px; 
+    padding: 5px 10px;
+}
+
+/* Boutons Ajouter / RESET */
+.action-buttons {
+    margin-top: 30px;       /* plus d'espace depuis les sections au-dessus */
+    margin-bottom: 50px;    /* espace avec le bas de la page */
+}
+
+button.add-order { 
+    background: #f5d6af; 
+    color: #4c464e; 
+    width: 200px;
+}
+
+button.reset { 
+    background: #ed7985; 
+    color: white; 
+    width: 200px;
+    margin-left: 20px; /* espace entre les deux boutons */
+}
 </style>
 </head>
 <body>
@@ -88,9 +153,11 @@ button.add-order, button.reset { background:#e74c3c; color:white; }
 <button class="option" data-price="1" onclick="toggle(this)">Fraise</button>
 </div>
 
-<br>
+<!-- Boutons Ajouter / RESET -->
+<div class="action-buttons">
 <button class="add-order" onclick="addOrder()">Ajouter cette commande</button>
 <button class="reset" onclick="resetTotal()">RESET</button>
+</div>
 
 <script>
 var total = 0;
