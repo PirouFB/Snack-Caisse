@@ -50,17 +50,19 @@ button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
 .bottom-bar .orders ul { list-style:none; padding:0; }
 .bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
 
-/* Conteneur produits responsive */
+/* Conteneur produits responsive et cliquable sur mobile */
 .products-container {
     display: flex;
     justify-content: center;
     gap: 15px;
-    flex-wrap: wrap; /* permet aux boutons de passer à la ligne si l'espace est trop petit */
+    flex-wrap: wrap; /* passe à la ligne si trop étroit */
     margin-top: 10px;
 }
 .products-container .product {
-    flex: 1 1 120px; /* largeur flexible, minimum 120px */
-    max-width: 140px; /* largeur max pour desktop */
+    min-width: 120px;   /* ne devient pas trop petit */
+    max-width: 140px;   /* largeur max desktop */
+    flex: none;         /* empêche redimensionnement automatique */
+    touch-action: manipulation; /* rend cliquable sur tablette */
 }
 
 /* Optionnel : réduire le padding sur mobile */
