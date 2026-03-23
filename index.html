@@ -51,7 +51,6 @@ button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
 .bottom-bar .orders ul { list-style:none; padding:0; }
 .bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
 
-/* Conteneur produits responsive */
 .products-container {
     display: flex;
     justify-content: center;
@@ -64,7 +63,6 @@ button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
     max-width: 140px;
 }
 
-/* Réduire le padding sur mobile */
 @media (max-width: 480px) {
     button { font-size: 14px; padding: 8px; }
 }
@@ -159,7 +157,7 @@ let currentOrder = [];
 let grandTotal = 0;
 let maxFlavors = 0;
 
-// Fonction utilitaire pour click + touchend sur iPad Safari
+// click + touchend pour Safari <11
 function addClickTouchListener(btn, fn){
     btn.addEventListener('click', fn);
     btn.addEventListener('touchend', fn);
@@ -252,7 +250,7 @@ function hideSection(id){ document.getElementById(id).className='hidden'; }
 function showSection(id){ document.getElementById(id).className='section'; }
 function hideAllGlaceSections(){ hideSection('iceChoice'); hideSection('scoopChoice'); hideSection('flavorChoice'); showSection('nappageSection'); showSection('toppingSection'); showSection('optionsSection'); }
 
-// ⚡ Initialisation boutons avec click + touchend
+// Initialisation boutons avec click + touchend
 document.querySelectorAll('.product').forEach(btn=>addClickTouchListener(btn, ()=>selectProduct(btn)));
 document.querySelectorAll('.option').forEach(btn=>{
     if(btn.dataset.type==='iceType'||btn.dataset.type==='scoop') addClickTouchListener(btn, ()=>selectSingle(btn, btn.dataset.type));
