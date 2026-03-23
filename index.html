@@ -50,12 +50,22 @@ button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
 .bottom-bar .orders ul { list-style:none; padding:0; }
 .bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
 
-/* Nouveau CSS pour produits horizontaux */
+/* Conteneur produits responsive */
 .products-container {
     display: flex;
     justify-content: center;
     gap: 15px;
+    flex-wrap: wrap; /* permet aux boutons de passer à la ligne si l'espace est trop petit */
     margin-top: 10px;
+}
+.products-container .product {
+    flex: 1 1 120px; /* largeur flexible, minimum 120px */
+    max-width: 140px; /* largeur max pour desktop */
+}
+
+/* Optionnel : réduire le padding sur mobile */
+@media (max-width: 480px) {
+    button { font-size: 14px; padding: 8px; }
 }
 </style>
 </head>
