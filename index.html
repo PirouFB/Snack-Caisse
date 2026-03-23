@@ -3,123 +3,260 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caisse Snack Multi-Commande avec Panier</title>
+<title>Caisse Snack</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
-    text-align: center;
-}
-button {
-    font-size: 20px;
-    padding: 10px;
-    margin: 6px;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    cursor: pointer;
-    width: 120px;
-}
-.product { background: #e67e22; }
-.option { background: #3498db; }
-.reset, .add-order { background: #e74c3c; color:white; }
-.selected {
-    border: 3px solid yellow;
-    box-shadow: 0 0 10px yellow;
-}
-.total, .grand-total {
-    font-size: 36px;
-    margin: 15px;
-}
+body { font-family: Arial, sans-serif; background:#111; color:white; text-align:center; }
+button { font-size:16px; padding:10px; margin:5px; border:2px solid transparent; border-radius:10px; width:140px; cursor:pointer; }
+button.product { background:#e67e22; }
+button.option { background:#3498db; }
+button.add-order, button.reset { background:#e74c3c; color:white; }
+.selected { border:3px solid yellow; box-shadow:0 0 10px yellow; }
+.total, .grand-total { font-size:32px; margin:10px; }
+.hidden { display:none; }
+.section { margin-top:20px; }
+.cart-item { display:flex; justify-content:center; align-items:center; }
+.cart-item button { width:auto; margin-left:10px; background:#c0392b; }
 </style>
 </head>
 <body>
+
 <h1>CAISSE SNACK</h1>
+
 <div class="total">Commande en cours: <span id="total">0</span> €</div>
 <div class="grand-total">Total Panier: <span id="grandTotal">0</span> €</div>
+
 <div class="orders">
-  <h2>Commandes enregistrées :</h2>
-  <ul id="orderList"></ul>
+<h2>Commandes enregistrées :</h2>
+<ul id="orderList"></ul>
 </div>
 
 <h2>Produits</h2>
-<button class="product" data-price="2.5" onclick="toggle(this)">Crêpe 2,50€</button>
-<button class="product" data-price="3.5" onclick="toggle(this)">Panini Gelato 3,50€</button>
+<button class="product" data-price="2.5" onclick="selectProduct(this)">Crêpe</button>
+<button class="product" data-price="3.5" onclick="selectProduct(this)">Panini Gelato</button>
+<button class="product" data-price="0" onclick="selectProduct(this)">Glace</button>
 
-<h2>Options 1 (1€)</h2>
-<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<!-- Choix Pot / Cône -->
+<div id="iceChoice" class="hidden section">
+<h2>Choisir : Pot ou Cône</h2>
+<button class="option" data-price="0" onclick="selectSingle(this,'iceType')">Pot</button>
+<button class="option" data-price="0" onclick="selectSingle(this,'iceType')">Cône</button>
+</div>
+
+<!-- Choix nombre de boules -->
+<div id="scoopChoice" class="hidden section">
+<h2>Nombre de boules</h2>
+<button class="option" data-price="2.5" onclick="selectSingle(this,'scoop')">1 boule</button>
+<button class="option" data-price="4" onclick="selectSingle(this,'scoop')">2 boules</button>
+<button class="option" data-price="5" onclick="selectSingle(this,'scoop')">3 boules</button>
+</div>
+
+<!-- Choix des parfums -->
+<div id="flavorChoice" class="hidden section">
+<h2>Choisir un parfum (1 par boule)</h2>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Menthe</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Fraise</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Citron</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Chocolat</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Noix de coco</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Vanille</button>
+<button class="option" data-price="0" onclick="toggleFlavor(this)">Caramel</button>
+</div>
+
+<!-- Nappage -->
+<div id="nappageSection" class="section">
+<h2>Nappage (1€)</h2>
 <button class="option" data-price="1" onclick="toggle(this)">Chocolat</button>
 <button class="option" data-price="1" onclick="toggle(this)">Caramel</button>
 <button class="option" data-price="1" onclick="toggle(this)">Nutella</button>
 <button class="option" data-price="1" onclick="toggle(this)">Fraise</button>
+</div>
 
-<h2>Options 2 (1€)</h2>
-<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<!-- Topping -->
+<div id="toppingSection" class="section">
+<h2>TOPPING (1€)</h2>
 <button class="option" data-price="1" onclick="toggle(this)">Kinder Bueno</button>
 <button class="option" data-price="1" onclick="toggle(this)">Chantilly</button>
 <button class="option" data-price="1" onclick="toggle(this)">Oréo</button>
 <button class="option" data-price="1" onclick="toggle(this)">Coco râpé</button>
+</div>
 
-<h2>Options 3 (1€)</h2>
-<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<!-- Options -->
+<div id="optionsSection" class="section">
+<h2>OPTIONS (1€)</h2>
 <button class="option" data-price="1" onclick="toggle(this)">Boule de glace</button>
 <button class="option" data-price="1" onclick="toggle(this)">Banane</button>
 <button class="option" data-price="1" onclick="toggle(this)">Fraise</button>
+</div>
 
 <br>
 <button class="add-order" onclick="addOrder()">Ajouter cette commande</button>
 <button class="reset" onclick="resetTotal()">RESET</button>
 
 <script>
-let total = 0;
-let grandTotal = 0;
-let currentOrder = [];
+var total = 0;
+var grandTotal = 0;
+var currentOrder = [];
+var maxFlavors = 0;
 
-function toggle(btn) {
-    let price = parseFloat(btn.getAttribute('data-price'));
-    if(btn.classList.contains('selected')) {
+function toggle(btn){
+    var price = parseFloat(btn.getAttribute('data-price'));
+    if(btn.className.indexOf('selected') !== -1){
         total -= price;
-        btn.classList.remove('selected');
-        let index = currentOrder.indexOf(btn.innerText);
-        if(index !== -1) currentOrder.splice(index,1);
+        btn.className = btn.className.replace(' selected','');
+        var idx = currentOrder.indexOf(btn.innerText);
+        if(idx !== -1) currentOrder.splice(idx,1);
     } else {
         total += price;
-        btn.classList.add('selected');
+        btn.className += ' selected';
         currentOrder.push(btn.innerText);
     }
     document.getElementById('total').innerText = total.toFixed(2);
 }
 
-function addOrder() {
-    if(currentOrder.length === 0) return;
-    let list = document.getElementById('orderList');
-    let li = document.createElement('li');
-    li.innerText = currentOrder.join(', ') + ' - ' + total.toFixed(2) + '€';
-    list.appendChild(li);
+function selectProduct(btn){
+    var products = document.getElementsByClassName('product');
+    for(var i=0;i<products.length;i++){
+        if(products[i]!==btn && products[i].className.indexOf('selected')!==-1){
+            total -= parseFloat(products[i].getAttribute('data-price'));
+            products[i].className = products[i].className.replace(' selected','');
+            var idx = currentOrder.indexOf(products[i].innerText);
+            if(idx!==-1) currentOrder.splice(idx,1);
+        }
+    }
 
-    // Ajouter au grand total
+    if(btn.className.indexOf('selected')!==-1){
+        btn.className = btn.className.replace(' selected','');
+        var idx = currentOrder.indexOf(btn.innerText);
+        if(idx!==-1) currentOrder.splice(idx,1);
+        total = 0; 
+        document.getElementById('iceChoice').className='hidden';
+        document.getElementById('scoopChoice').className='hidden';
+        document.getElementById('flavorChoice').className='hidden';
+        document.getElementById('nappageSection').style.display='';
+        document.getElementById('toppingSection').style.display='';
+        document.getElementById('optionsSection').style.display='';
+    } else {
+        btn.className += ' selected';
+        if(btn.innerText==='Glace'){
+            currentOrder.push('Glace');
+            document.getElementById('iceChoice').className='';
+            document.getElementById('scoopChoice').className='hidden';
+            document.getElementById('flavorChoice').className='hidden';
+            document.getElementById('nappageSection').style.display='none';
+            document.getElementById('toppingSection').style.display='none';
+            document.getElementById('optionsSection').style.display='none';
+            total = 0;
+        } else {
+            var price = parseFloat(btn.getAttribute('data-price'));
+            total += price;
+            currentOrder.push(btn.innerText);
+            document.getElementById('iceChoice').className='hidden';
+            document.getElementById('scoopChoice').className='hidden';
+            document.getElementById('flavorChoice').className='hidden';
+            document.getElementById('nappageSection').style.display='';
+            document.getElementById('toppingSection').style.display='';
+            document.getElementById('optionsSection').style.display='';
+        }
+    }
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function selectSingle(btn, group){
+    var container = group==='iceType'?document.getElementById('iceChoice'):document.getElementById('scoopChoice');
+    var buttons = container.getElementsByTagName('button');
+    for(var i=0;i<buttons.length;i++){
+        if(buttons[i]!==btn && buttons[i].className.indexOf('selected')!==-1){
+            buttons[i].className = buttons[i].className.replace(' selected','');
+            var idx = currentOrder.indexOf(buttons[i].innerText);
+            if(idx!==-1) currentOrder.splice(idx,1);
+            total -= parseFloat(buttons[i].getAttribute('data-price'));
+        }
+    }
+
+    if(btn.className.indexOf('selected')!==-1){
+        btn.className = btn.className.replace(' selected','');
+        var idx = currentOrder.indexOf(btn.innerText);
+        if(idx!==-1) currentOrder.splice(idx,1);
+        total -= parseFloat(btn.getAttribute('data-price'));
+        if(group==='scoop'){ maxFlavors=0; document.getElementById('flavorChoice').className='hidden'; }
+    } else {
+        btn.className += ' selected';
+        currentOrder.push(btn.innerText);
+        if(group==='scoop'){
+            maxFlavors = btn.innerText==='1 boule'?1:btn.innerText==='2 boules'?2:3;
+            document.getElementById('flavorChoice').className='';
+            total = parseFloat(btn.getAttribute('data-price'));
+        } else if(group==='iceType'){
+            document.getElementById('scoopChoice').className=''; 
+        }
+    }
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function toggleFlavor(btn){
+    if(btn.className.indexOf('selected') !== -1){
+        btn.className = btn.className.replace(' selected','');
+        var idx = currentOrder.indexOf(btn.innerText);
+        if(idx !== -1) currentOrder.splice(idx,1);
+    } else {
+        var selected = document.getElementsByClassName('selected');
+        var flavorSelected = 0;
+        for(var i=0;i<selected.length;i++){ if(selected[i].parentNode.id==='flavorChoice') flavorSelected++; }
+        if(flavorSelected >= maxFlavors) return;
+        btn.className += ' selected';
+        currentOrder.push(btn.innerText);
+    }
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function addOrder(){
+    if(currentOrder.length===0) return;
+    var li = document.createElement('li');
+    li.className = "cart-item";
+    li.innerHTML = currentOrder.join(', ') + ' - ' + total.toFixed(2) + '€ ';
+
+    // Bouton supprimer
+    var btnDel = document.createElement('button');
+    btnDel.innerText = 'Supprimer';
+    btnDel.onclick = function(){
+        var prix = parseFloat(li.innerText.match(/([\d\.]+)€/)[1]);
+        grandTotal -= prix;
+        document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+        li.remove();
+    }
+    li.appendChild(btnDel);
+
+    document.getElementById('orderList').appendChild(li);
     grandTotal += total;
     document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
 
-    // reset sélection pour une nouvelle commande
-    total = 0;
-    currentOrder = [];
-    document.getElementById('total').innerText = total.toFixed(2);
-    let buttons = document.querySelectorAll('button');
-    buttons.forEach(b => b.classList.remove('selected'));
+    total=0; currentOrder=[]; maxFlavors=0;
+    document.getElementById('total').innerText='0';
+    document.getElementById('iceChoice').className='hidden';
+    document.getElementById('scoopChoice').className='hidden';
+    document.getElementById('flavorChoice').className='hidden';
+    var buttons = document.getElementsByTagName('button');
+    for(var i=0;i<buttons.length;i++){ buttons[i].className = buttons[i].className.replace(' selected',''); }
+    document.getElementById('nappageSection').style.display='';
+    document.getElementById('toppingSection').style.display='';
+    document.getElementById('optionsSection').style.display='';
 }
 
-function resetTotal() {
-    total = 0;
-    grandTotal = 0;
-    currentOrder = [];
-    document.getElementById('total').innerText = total.toFixed(2);
-    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-    let list = document.getElementById('orderList');
-    list.innerHTML = '';
-    let buttons = document.querySelectorAll('button');
-    buttons.forEach(b => b.classList.remove('selected'));
+function resetTotal(){
+    total=0; grandTotal=0; currentOrder=[]; maxFlavors=0;
+    document.getElementById('total').innerText='0';
+    document.getElementById('grandTotal').innerText='0';
+    document.getElementById('orderList').innerHTML='';
+    document.getElementById('iceChoice').className='hidden';
+    document.getElementById('scoopChoice').className='hidden';
+    document.getElementById('flavorChoice').className='hidden';
+    var buttons = document.getElementsByTagName('button');
+    for(var i=0;i<buttons.length;i++){ buttons[i].className = buttons[i].className.replace(' selected',''); }
+    document.getElementById('nappageSection').style.display='';
+    document.getElementById('toppingSection').style.display='';
+    document.getElementById('optionsSection').style.display='';
 }
 </script>
+
 </body>
 </html>
