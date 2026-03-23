@@ -16,9 +16,6 @@ body {
     align-items: center; 
 }
 
-.logo-container { margin: 20px 0; text-align:center; }
-.logo { width: 150px; height: 150px; }
-
 .top-bar { margin-bottom: 20px; text-align:center; }
 
 button { 
@@ -52,22 +49,28 @@ button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
 .bottom-bar .grand-total, .bottom-bar .orders { text-align:center; }
 .bottom-bar .orders ul { list-style:none; padding:0; }
 .bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
+
+/* Nouveau CSS pour produits horizontaux */
+.products-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
 </style>
 </head>
 <body>
-
-<div class="logo-container">
-    <img src="logo.png" alt="Logo" class="logo">
-</div>
 
 <div class="top-bar">
     <div class="total">Commande en cours: <span id="total">0.00</span> €</div>
 </div>
 
 <h2>Produits</h2>
-<button class="product" data-price="2.5" onclick="selectProduct(this)">Crêpe</button>
-<button class="product" data-price="3.5" onclick="selectProduct(this)">Panini Gelato</button>
-<button class="product" data-price="0" onclick="selectProduct(this)">Glace</button>
+<div class="products-container">
+    <button class="product" data-price="2.5" onclick="selectProduct(this)">Crêpe</button>
+    <button class="product" data-price="3.5" onclick="selectProduct(this)">Panini Gelato</button>
+    <button class="product" data-price="0" onclick="selectProduct(this)">Glace</button>
+</div>
 
 <!-- Choix Glace -->
 <div id="iceChoice" class="hidden section">
@@ -229,7 +232,6 @@ function addOrder(){
         }
     }
 
-    // Vérification mini glace pour Crêpe ou Panini
     if((selectedProduct === 'Crêpe' || selectedProduct === 'Panini Gelato') &&
        document.querySelector('#optionsSection .option[data-type="mini-glace"].selected')) {
         const miniFlavorSelected = document.querySelectorAll('#miniFlavor .option.selected').length > 0;
@@ -254,10 +256,9 @@ function addOrder(){
     document.getElementById('orderList').appendChild(li);
     document.getElementById('grandTotal').innerText=grandTotal.toFixed(2);
 
-    resetCurrentOrder(); // seulement la commande en cours
+    resetCurrentOrder();
 }
 
-// RESET complet : supprime tout
 function resetTotal(){
     document.querySelectorAll('button.selected').forEach(b=>b.classList.remove('selected'));
     currentOrder = [];
