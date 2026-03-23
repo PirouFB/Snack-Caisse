@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caisse Snack Multi-Commande avec Panier</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    text-align: center;
+}
+button {
+    font-size: 20px;
+    padding: 10px;
+    margin: 6px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 120px;
+}
+.product { background: #e67e22; }
+.option { background: #3498db; }
+.reset, .add-order { background: #e74c3c; color:white; }
+.selected {
+    border: 3px solid yellow;
+    box-shadow: 0 0 10px yellow;
+}
+.total, .grand-total {
+    font-size: 36px;
+    margin: 15px;
+}
+</style>
+</head>
+<body>
+<h1>CAISSE SNACK</h1>
+<div class="total">Commande en cours: <span id="total">0</span> €</div>
+<div class="grand-total">Total Panier: <span id="grandTotal">0</span> €</div>
+<div class="orders">
+  <h2>Commandes enregistrées :</h2>
+  <ul id="orderList"></ul>
+</div>
+
+<h2>Produits</h2>
+<button class="product" data-price="2.5" onclick="toggle(this)">Crêpe 2,50€</button>
+<button class="product" data-price="3.5" onclick="toggle(this)">Panini Gelato 3,50€</button>
+
+<h2>Options 1 (1€)</h2>
+<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<button class="option" data-price="1" onclick="toggle(this)">Chocolat</button>
+<button class="option" data-price="1" onclick="toggle(this)">Caramel</button>
+<button class="option" data-price="1" onclick="toggle(this)">Nutella</button>
+<button class="option" data-price="1" onclick="toggle(this)">Fraise</button>
+
+<h2>Options 2 (1€)</h2>
+<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<button class="option" data-price="1" onclick="toggle(this)">Kinder Bueno</button>
+<button class="option" data-price="1" onclick="toggle(this)">Chantilly</button>
+<button class="option" data-price="1" onclick="toggle(this)">Oréo</button>
+<button class="option" data-price="1" onclick="toggle(this)">Coco râpé</button>
+
+<h2>Options 3 (1€)</h2>
+<button class="option" data-price="0" onclick="toggle(this)">Aucun</button>
+<button class="option" data-price="1" onclick="toggle(this)">Boule de glace</button>
+<button class="option" data-price="1" onclick="toggle(this)">Banane</button>
+<button class="option" data-price="1" onclick="toggle(this)">Fraise</button>
+
+<br>
+<button class="add-order" onclick="addOrder()">Ajouter cette commande</button>
+<button class="reset" onclick="resetTotal()">RESET</button>
+
+<script>
+let total = 0;
+let grandTotal = 0;
+let currentOrder = [];
+
+function toggle(btn) {
+    let price = parseFloat(btn.getAttribute('data-price'));
+    if(btn.classList.contains('selected')) {
+        total -= price;
+        btn.classList.remove('selected');
+        let index = currentOrder.indexOf(btn.innerText);
+        if(index !== -1) currentOrder.splice(index,1);
+    } else {
+        total += price;
+        btn.classList.add('selected');
+        currentOrder.push(btn.innerText);
+    }
+    document.getElementById('total').innerText = total.toFixed(2);
+}
+
+function addOrder() {
+    if(currentOrder.length === 0) return;
+    let list = document.getElementById('orderList');
+    let li = document.createElement('li');
+    li.innerText = currentOrder.join(', ') + ' - ' + total.toFixed(2) + '€';
+    list.appendChild(li);
+
+    // Ajouter au grand total
+    grandTotal += total;
+    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+
+    // reset sélection pour une nouvelle commande
+    total = 0;
+    currentOrder = [];
+    document.getElementById('total').innerText = total.toFixed(2);
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(b => b.classList.remove('selected'));
+}
+
+function resetTotal() {
+    total = 0;
+    grandTotal = 0;
+    currentOrder = [];
+    document.getElementById('total').innerText = total.toFixed(2);
+    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
+    let list = document.getElementById('orderList');
+    list.innerHTML = '';
+    let buttons = document.querySelectorAll('button');
+    buttons.forEach(b => b.classList.remove('selected'));
+}
+</script>
+</body>
+</html>
