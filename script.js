@@ -1,3 +1,164 @@
+voici mon index.html : 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caisse Snack</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="total">Commande en cours: <span id="total">0.00</span> €</div>
+</div>
+
+<h2>Produits</h2>
+<div class="products-container">
+    <button class="product" data-price="2.5">Crêpe</button>
+    <button class="product" data-price="3.5">Panini Gelato</button>
+    <button class="product" data-price="0">Glace</button>
+</div>
+
+<div id="iceChoice" class="hidden section">
+<h2>Choisir : Pot ou Cornet</h2>
+<button class="option" data-price="0" data-type="iceType">Pot</button>
+<button class="option" data-price="0" data-type="iceType">Cornet</button>
+</div>
+
+<div id="scoopChoice" class="hidden section">
+<h2>Nombre de boules</h2>
+<button class="option" data-price="2.5" data-type="scoop">1 boule</button>
+<button class="option" data-price="4" data-type="scoop">2 boules</button>
+<button class="option" data-price="5" data-type="scoop">3 boules</button>
+</div>
+
+<div id="flavorChoice" class="hidden section">
+<h2>Choisir un parfum (1 par boule)</h2>
+<button class="option" data-price="0">Menthe</button>
+<button class="option" data-price="0">Fraise</button>
+<button class="option" data-price="0">Citron</button>
+<button class="option" data-price="0">Chocolat</button>
+<button class="option" data-price="0">Noix de coco</button>
+<button class="option" data-price="0">Vanille</button>
+<button class="option" data-price="0">Caramel</button>
+</div>
+
+<div id="nappageSection" class="hidden section">
+<h2>Nappage (1€)</h2>
+<button class="option" data-price="1">Chocolat</button>
+<button class="option" data-price="1">Caramel</button>
+<button class="option" data-price="1">Nutella</button>
+<button class="option" data-price="1">Fraise</button>
+</div>
+
+<div id="toppingSection" class="hidden section">
+<h2>TOPPING (1€)</h2>
+<button class="option" data-price="1">Kinder Bueno</button>
+<button class="option" data-price="1">Chantilly</button>
+<button class="option" data-price="1">Oréo</button>
+<button class="option" data-price="1">Coco râpé</button>
+</div>
+
+<div id="optionsSection" class="hidden section">
+<h2>OPTIONS (1€)</h2>
+<button class="option" data-price="1">Morceaux de fraise</button>
+<button class="option" data-price="1">Morceaux de banane</button>
+<button class="option" data-price="1" data-type="mini-glace">Boule de glace</button>
+
+<div id="miniFlavor" class="hidden section" style="margin-top:10px;">
+<h3>Choisir un parfum (1)</h3>
+<button class="option" data-price="0">Menthe</button>
+<button class="option" data-price="0">Fraise</button>
+<button class="option" data-price="0">Citron</button>
+<button class="option" data-price="0">Chocolat</button>
+<button class="option" data-price="0">Noix de coco</button>
+<button class="option" data-price="0">Vanille</button>
+<button class="option" data-price="0">Caramel</button>
+</div>
+</div>
+
+<div class="action-buttons">
+<button class="add-order">Ajouter cette commande</button>
+<button class="reset">RESET</button>
+</div>
+
+<div class="bottom-bar">
+    <div class="grand-total">Total Panier: <span id="grandTotal">0.00</span> €</div>
+    <div class="orders">
+        <h2>Commandes enregistrées :</h2>
+        <ul id="orderList"></ul>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+voici mon css:
+body { 
+    font-family: Arial, sans-serif; 
+    background: #fff8f0;   
+    color: #4c464e;        
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center; 
+}
+
+.top-bar { margin-bottom: 20px; text-align:center; }
+
+button { 
+    font-size: 16px; 
+    padding: 10px; 
+    margin: 5px; 
+    border: 2px solid transparent; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    background: #b9e3ed;   
+    color: #4c464e;         
+    transition: 0.3s;       
+    display: inline-block; 
+    position: relative;    
+}
+
+button.selected { 
+    background: #fec1c3;   
+    border: 3px solid #fec1c3;
+    box-shadow: 0 0 10px #fec1c3;
+}
+
+.total, .grand-total { font-size: 32px; margin: 10px; }
+.hidden { display: none; }
+.section { margin-top: 20px; text-align:center; }
+
+.action-buttons { margin:30px 0 50px; }
+button.add-order { background:#f5d6af; color:#4c464e; width:200px; }
+button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
+
+.bottom-bar { display:flex; justify-content:space-around; width:100%; margin-top:auto; padding:20px; flex-wrap:wrap; }
+.bottom-bar .grand-total, .bottom-bar .orders { text-align:center; }
+.bottom-bar .orders ul { list-style:none; padding:0; }
+.bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
+
+.products-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.products-container .product {
+    min-width: 120px;
+    max-width: 140px;
+}
+
+@media (max-width: 480px) {
+    button { font-size: 14px; padding: 8px; }
+}
+
+Voici mon js:
 let currentOrder = [];
 let grandTotal = 0;
 let maxFlavors = 0;
@@ -105,3 +266,5 @@ document.querySelectorAll('.option').forEach(btn=>{
 });
 addClickTouchListener(document.querySelector('.add-order'), addOrder);
 addClickTouchListener(document.querySelector('.reset'), resetTotal);
+
+Maintenant modifie le pour que sa ressemble. ca (photo ci-joint)
