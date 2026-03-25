@@ -2,105 +2,41 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snack Sucré</title>
+<meta name="viewport" content="width=768, initial-scale=1.0">
+<title>Caisse</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- HEADER -->
-<div class="header">
-    <img src="logo-left.png" class="logo">
-    <div class="header-center">
-        Commande en cours : <span id="total">0.00</span> €
+<div class="container">
+
+  <div class="header">
+    <img src="logo-vague.png">
+    <div id="total">0.00€</div>
+    <img src="logo-manga.png">
+  </div>
+
+  <div class="row center">
+    <div class="card" onclick="selectMain('Crêpes',2.5,this)">
+      <img src="icon-crepe.png"><p>Crêpes</p>
     </div>
-    <img src="logo-right.png" class="logo">
-</div>
-
-<!-- PRODUITS -->
-<div class="products">
-    <div class="card product" data-name="Crêpe" data-price="2.5">
-        <img src="icon-crepe.png">
-        <p>crêpe</p>
+    <div class="card" onclick="selectMain('Panini',3.5,this)">
+      <img src="icon-panini.png"><p>Panini</p>
     </div>
-
-    <div class="card product" data-name="Panini" data-price="3.5">
-        <img src="icon-panini.png">
-        <p>panini</p>
+    <div class="card" onclick="selectMain('Glace',0,this)">
+      <img src="icon-glace.png"><p>Glace</p>
     </div>
+  </div>
 
-    <div class="card product" data-name="Glace" data-price="0">
-        <img src="icon-glace.png">
-        <p>glace</p>
-    </div>
-</div>
+  <div id="dynamic"></div>
 
-<!-- BLOCS -->
-<div class="blocks">
+  <div class="footer">
+    <button onclick="addToCart()">Ajouter</button>
+    <button class="reset" onclick="resetAll()">RESET</button>
+    <div id="cart"></div>
+  </div>
 
-<!-- NAPPAGE -->
-<div class="block" id="nappage">
-<h3>NAPPAGE</h3>
-<div class="grid">
-    <div class="card option" data-price="1"><img src="nutella.png"><span>nutella</span></div>
-    <div class="card option" data-price="1"><img src="sucre.png"><span>sucre</span></div>
-    <div class="card option" data-price="1"><img src="chocolat.png"><span>chocolat</span></div>
-    <div class="card option" data-price="1"><img src="caramel.png"><span>caramel</span></div>
-    <div class="card option" data-price="1"><img src="fraise.png"><span>fraise</span></div>
-</div>
-</div>
-
-<!-- TOPPING -->
-<div class="block">
-<h3>TOPPING</h3>
-<div class="grid">
-    <div class="card option" data-price="1"><img src="kinder.png"><span>kinder bueno</span></div>
-    <div class="card option" data-price="1"><img src="oreo.png"><span>oreo</span></div>
-    <div class="card option" data-price="1"><img src="sprinkles.png"><span>sprinkles</span></div>
-    <div class="card option" data-price="1"><img src="chantilly.png"><span>chantilly</span></div>
-</div>
-</div>
-
-<!-- OPTIONS -->
-<div class="block">
-<h3>OPTIONS</h3>
-<div class="grid">
-    <div class="card option" data-price="1"><img src="glace-vanille.png"><span>boule de glace</span></div>
-    <div class="card option" data-price="1"><img src="banane.png"><span>banane</span></div>
-    <div class="card option" data-price="1"><img src="myrtille.png"><span>myrtille</span></div>
-    <div class="card option" data-price="1"><img src="fraise.png"><span>fraise</span></div>
-</div>
-</div>
-
-</div>
-
-<!-- PARFUMS GLACES -->
-<div class="flavors">
-    <div class="card flavor" data-price="0"><img src="fraise.png"><span>fraise</span></div>
-    <div class="card flavor" data-price="0"><img src="chocolat.png"><span>chocolat</span></div>
-    <div class="card flavor" data-price="0"><img src="vanille.png"><span>vanille</span></div>
-    <div class="card flavor" data-price="0"><img src="menthe.png"><span>menthe</span></div>
-    <div class="card flavor" data-price="0"><img src="coco.png"><span>noix de coco</span></div>
-    <div class="card flavor" data-price="0"><img src="caramel.png"><span>caramel</span></div>
-</div>
-
-<!-- ACTIONS -->
-<div class="actions">
-    <button id="add">Ajouter cette commande</button>
-    <button id="reset">RESET</button>
-</div>
-
-<!-- PANIER -->
-<div class="bottom">
-    <div class="orders">
-        <h3>Commandes enregistrées :</h3>
-        <ul id="list"></ul>
-    </div>
-
-    <div class="total-circle">
-        Total Panier : <br>
-        <span id="grandTotal">0.00</span> €
-    </div>
 </div>
 
 <script src="script.js"></script>

@@ -1,270 +1,344 @@
-voici mon index.html : 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Caisse Snack</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+let total = 0;
+let basePrice = 0;
 
-<div class="top-bar">
-    <div class="total">Commande en cours: <span id="total">0.00</span> €</div>
-</div>
-
-<h2>Produits</h2>
-<div class="products-container">
-    <button class="product" data-price="2.5">Crêpe</button>
-    <button class="product" data-price="3.5">Panini Gelato</button>
-    <button class="product" data-price="0">Glace</button>
-</div>
-
-<div id="iceChoice" class="hidden section">
-<h2>Choisir : Pot ou Cornet</h2>
-<button class="option" data-price="0" data-type="iceType">Pot</button>
-<button class="option" data-price="0" data-type="iceType">Cornet</button>
-</div>
-
-<div id="scoopChoice" class="hidden section">
-<h2>Nombre de boules</h2>
-<button class="option" data-price="2.5" data-type="scoop">1 boule</button>
-<button class="option" data-price="4" data-type="scoop">2 boules</button>
-<button class="option" data-price="5" data-type="scoop">3 boules</button>
-</div>
-
-<div id="flavorChoice" class="hidden section">
-<h2>Choisir un parfum (1 par boule)</h2>
-<button class="option" data-price="0">Menthe</button>
-<button class="option" data-price="0">Fraise</button>
-<button class="option" data-price="0">Citron</button>
-<button class="option" data-price="0">Chocolat</button>
-<button class="option" data-price="0">Noix de coco</button>
-<button class="option" data-price="0">Vanille</button>
-<button class="option" data-price="0">Caramel</button>
-</div>
-
-<div id="nappageSection" class="hidden section">
-<h2>Nappage (1€)</h2>
-<button class="option" data-price="1">Chocolat</button>
-<button class="option" data-price="1">Caramel</button>
-<button class="option" data-price="1">Nutella</button>
-<button class="option" data-price="1">Fraise</button>
-</div>
-
-<div id="toppingSection" class="hidden section">
-<h2>TOPPING (1€)</h2>
-<button class="option" data-price="1">Kinder Bueno</button>
-<button class="option" data-price="1">Chantilly</button>
-<button class="option" data-price="1">Oréo</button>
-<button class="option" data-price="1">Coco râpé</button>
-</div>
-
-<div id="optionsSection" class="hidden section">
-<h2>OPTIONS (1€)</h2>
-<button class="option" data-price="1">Morceaux de fraise</button>
-<button class="option" data-price="1">Morceaux de banane</button>
-<button class="option" data-price="1" data-type="mini-glace">Boule de glace</button>
-
-<div id="miniFlavor" class="hidden section" style="margin-top:10px;">
-<h3>Choisir un parfum (1)</h3>
-<button class="option" data-price="0">Menthe</button>
-<button class="option" data-price="0">Fraise</button>
-<button class="option" data-price="0">Citron</button>
-<button class="option" data-price="0">Chocolat</button>
-<button class="option" data-price="0">Noix de coco</button>
-<button class="option" data-price="0">Vanille</button>
-<button class="option" data-price="0">Caramel</button>
-</div>
-</div>
-
-<div class="action-buttons">
-<button class="add-order">Ajouter cette commande</button>
-<button class="reset">RESET</button>
-</div>
-
-<div class="bottom-bar">
-    <div class="grand-total">Total Panier: <span id="grandTotal">0.00</span> €</div>
-    <div class="orders">
-        <h2>Commandes enregistrées :</h2>
-        <ul id="orderList"></ul>
-    </div>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-voici mon css:
-body { 
-    font-family: Arial, sans-serif; 
-    background: #fff8f0;   
-    color: #4c464e;        
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    align-items: center; 
-}
-
-.top-bar { margin-bottom: 20px; text-align:center; }
-
-button { 
-    font-size: 16px; 
-    padding: 10px; 
-    margin: 5px; 
-    border: 2px solid transparent; 
-    border-radius: 10px; 
-    cursor: pointer; 
-    background: #b9e3ed;   
-    color: #4c464e;         
-    transition: 0.3s;       
-    display: inline-block; 
-    position: relative;    
-}
-
-button.selected { 
-    background: #fec1c3;   
-    border: 3px solid #fec1c3;
-    box-shadow: 0 0 10px #fec1c3;
-}
-
-.total, .grand-total { font-size: 32px; margin: 10px; }
-.hidden { display: none; }
-.section { margin-top: 20px; text-align:center; }
-
-.action-buttons { margin:30px 0 50px; }
-button.add-order { background:#f5d6af; color:#4c464e; width:200px; }
-button.reset { background:#ed7985; color:white; width:200px; margin-left:20px; }
-
-.bottom-bar { display:flex; justify-content:space-around; width:100%; margin-top:auto; padding:20px; flex-wrap:wrap; }
-.bottom-bar .grand-total, .bottom-bar .orders { text-align:center; }
-.bottom-bar .orders ul { list-style:none; padding:0; }
-.bottom-bar .orders li { margin:5px 0; display:flex; align-items:center; justify-content:center; }
-
-.products-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-}
-.products-container .product {
-    min-width: 120px;
-    max-width: 140px;
-}
-
-@media (max-width: 480px) {
-    button { font-size: 14px; padding: 8px; }
-}
-
-Voici mon js:
 let currentOrder = [];
-let grandTotal = 0;
-let maxFlavors = 0;
+let orders = [];
+let orderPrices = []; // 🔥 IMPORTANT
 
-function addClickTouchListener(btn, fn){
-    btn.addEventListener('click', fn);
-    btn.addEventListener('touchend', fn);
+let bouleMax = 0;
+let bouleCount = 0;
+
+/* ================= TOTAL ================= */
+
+function updateTotal(){
+  document.getElementById("total").innerText = total.toFixed(2) + "€";
 }
 
-function calculateTotal() {
-    let total = 0;
-    document.querySelectorAll('.product.selected, .option.selected').forEach(btn => total += parseFloat(btn.dataset.price||0));
-    document.getElementById('total').innerText = total.toFixed(2);
-    return total;
+function getCartTotal(){
+  return orderPrices.reduce((a,b)=>a+b,0);
 }
 
-function toggleSelection(btn){ btn.classList.toggle('selected'); updateCurrentOrder(); }
-function toggleFlavor(btn){
-    if(btn.classList.contains('selected')) btn.classList.remove('selected');
-    else if(document.querySelectorAll('#flavorChoice .option.selected').length < maxFlavors) btn.classList.add('selected');
-    else alert('Nombre de parfums max atteint');
-    updateCurrentOrder();
-}
-function toggleMiniGlace(btn){
-    btn.classList.toggle('selected');
-    if(btn.classList.contains('selected')) showSection('miniFlavor');
-    else { hideSection('miniFlavor'); document.querySelectorAll('#miniFlavor .option.selected').forEach(b=>b.classList.remove('selected')); }
-    updateCurrentOrder();
-}
-function toggleMiniFlavor(btn){
-    if(btn.classList.contains('selected')) btn.classList.remove('selected');
-    else if(document.querySelectorAll('#miniFlavor .option.selected').length < 1) btn.classList.add('selected');
-    else alert('Un seul parfum mini glace');
-    updateCurrentOrder();
-}
+/* ================= CART ================= */
 
-function selectProduct(btn){
-    document.querySelectorAll('.product').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    if(btn.innerText==='Glace'){ hideSection('nappageSection'); hideSection('toppingSection'); hideSection('optionsSection'); showSection('iceChoice'); hideSection('scoopChoice'); hideSection('flavorChoice'); hideSection('miniFlavor'); }
-    else hideAllGlaceSections();
-    updateCurrentOrder();
-}
+function updateCart(){
 
-function selectSingle(btn, type){
-    document.querySelectorAll(`.option[data-type="${type}"]`).forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    if(type==='iceType') showSection('scoopChoice');
-    if(type==='scoop'){ maxFlavors=parseInt(btn.innerText); showSection('flavorChoice'); }
-    updateCurrentOrder();
+  document.getElementById("cart").innerHTML =
+    orders.map((o,i)=>`
+      <div onclick="removeOrder(${i})" style="
+        cursor:pointer;
+        margin:5px;
+        padding:6px;
+        background:#ffe3e6;
+        border-radius:8px;
+        font-size:14px;
+      ">
+        ❌ #${i+1} : ${o.join(", ")}
+        <b> — ${orderPrices[i].toFixed(2)}€</b>
+      </div>
+    `).join("")
+    +
+    `
+    <div style="
+      margin-top:10px;
+      font-weight:bold;
+      font-size:16px;
+    ">
+      Total panier : ${getCartTotal().toFixed(2)}€
+    </div>
+    `;
 }
 
-function updateCurrentOrder(){
-    currentOrder=[];
-    document.querySelectorAll('.product.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#iceChoice .option.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#scoopChoice .option.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#flavorChoice .option.selected').forEach(b=>currentOrder.push('Glace: '+b.innerText));
-    document.querySelectorAll('#nappageSection .option.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#toppingSection .option.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#optionsSection .option.selected').forEach(b=>currentOrder.push(b.innerText));
-    document.querySelectorAll('#miniFlavor .option.selected').forEach(b=>currentOrder.push('Mini: '+b.innerText));
-    calculateTotal();
+/* ================= RESET ================= */
+
+function resetAll(){
+
+  total = 0;
+  basePrice = 0;
+
+  currentOrder = [];
+  orders = [];
+  orderPrices = [];
+
+  bouleMax = 0;
+  bouleCount = 0;
+
+  document.getElementById("dynamic").innerHTML = "";
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
+
+  updateTotal();
+  updateCart();
 }
 
-function addOrder(){
-    if(document.querySelectorAll('.product.selected').length === 0){ alert('Sélectionnez un produit principal'); return; }
-    const selectedProduct = document.querySelector('.product.selected').innerText;
-    if(selectedProduct==='Glace' && (document.querySelectorAll('#iceChoice .option.selected').length===0 || document.querySelectorAll('#scoopChoice .option.selected').length===0)){ alert('Choisir Pot/Cornet et nombre de boules'); return; }
-    if((selectedProduct==='Crêpe'||selectedProduct==='Panini Gelato') && document.querySelector('#optionsSection .option[data-type="mini-glace"].selected') && document.querySelectorAll('#miniFlavor .option.selected').length===0){ alert('Choisir un parfum pour mini glace'); return; }
+/* ================= ADD CART ================= */
 
-    let orderTotal = calculateTotal();
-    grandTotal += orderTotal;
+function addToCart(){
 
-    let li=document.createElement('li'); li.style.display='flex'; li.style.alignItems='center';
-    let span=document.createElement('span'); span.innerText=currentOrder.join(' + ')+' = '+orderTotal.toFixed(2)+'€';
-    li.appendChild(span);
+  if(currentOrder.length === 0) return;
 
-    let delBtn=document.createElement('button'); delBtn.innerText='Supprimer'; delBtn.style.marginLeft='10px';
-    delBtn.style.background='#c0392b'; delBtn.style.color='white'; delBtn.style.border='none'; delBtn.style.borderRadius='5px';
-    delBtn.style.padding='3px 6px';
-    addClickTouchListener(delBtn, ()=>{ grandTotal-=orderTotal; document.getElementById('grandTotal').innerText=grandTotal.toFixed(2); li.remove(); });
-    li.appendChild(delBtn);
+  orders.push([...currentOrder]);
+  orderPrices.push(total); // 🔥 sauvegarde prix
 
-    document.getElementById('orderList').appendChild(li);
-    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-    resetCurrentOrder();
+  currentOrder = [];
+  total = 0;
+  basePrice = 0;
+
+  bouleMax = 0;
+  bouleCount = 0;
+
+  document.getElementById("dynamic").innerHTML = "";
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
+
+  updateTotal();
+  updateCart();
 }
 
-function resetTotal(){ document.querySelectorAll('button.selected').forEach(b=>b.classList.remove('selected')); currentOrder=[]; grandTotal=0; document.getElementById('grandTotal').innerText='0.00'; document.getElementById('orderList').innerHTML=''; calculateTotal(); hideAllGlaceSections(); hideSection('miniFlavor'); }
-function resetCurrentOrder(){ document.querySelectorAll('button.selected').forEach(b=>b.classList.remove('selected')); currentOrder=[]; calculateTotal(); hideAllGlaceSections(); hideSection('miniFlavor'); }
+/* ================= REMOVE ================= */
 
-function hideSection(id){ document.getElementById(id).className='hidden'; }
-function showSection(id){ document.getElementById(id).className='section'; }
-function hideAllGlaceSections(){ hideSection('iceChoice'); hideSection('scoopChoice'); hideSection('flavorChoice'); showSection('nappageSection'); showSection('toppingSection'); showSection('optionsSection'); }
+function removeOrder(index){
 
-// Initialisation boutons
-document.querySelectorAll('.product').forEach(btn=>addClickTouchListener(btn, ()=>selectProduct(btn)));
-document.querySelectorAll('.option').forEach(btn=>{
-    if(btn.dataset.type==='iceType'||btn.dataset.type==='scoop') addClickTouchListener(btn, ()=>selectSingle(btn, btn.dataset.type));
-    else if(btn.parentElement.id==='flavorChoice') addClickTouchListener(btn, ()=>toggleFlavor(btn));
-    else if(btn.parentElement.id==='miniFlavor') addClickTouchListener(btn, ()=>toggleMiniFlavor(btn));
-    else if(btn.dataset.type==='mini-glace') addClickTouchListener(btn, ()=>toggleMiniGlace(btn));
-    else addClickTouchListener(btn, ()=>toggleSelection(btn));
-});
-addClickTouchListener(document.querySelector('.add-order'), addOrder);
-addClickTouchListener(document.querySelector('.reset'), resetTotal);
+  orders.splice(index, 1);
+  orderPrices.splice(index, 1);
 
-Maintenant modifie le pour que sa ressemble. ca (photo ci-joint)
+  updateCart();
+}
+
+/* ================= MAIN ================= */
+
+function selectMain(name, price, el){
+
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  basePrice = price;
+  total = price;
+
+  currentOrder = [name];
+
+  updateTotal();
+  updateCart();
+
+  if(name === "Glace") showGlaceStep1();
+  else showCrepePanini();
+}
+
+/* ================= CREPES ================= */
+
+function showCrepePanini(){
+
+  document.getElementById("dynamic").innerHTML = `
+    <h3>Nappage</h3>
+    <div class="row">${build(nappage)}</div>
+
+    <h3>Topping</h3>
+    <div class="row">${build(topping)}</div>
+
+    <h3>Options</h3>
+    <div class="row">${build(options)}</div>
+  `;
+}
+
+/* ================= DATA ================= */
+
+const nappage = [
+["icon-nappage-nutella.png","Nutella"],
+["icon-nappage-sucre.png","Sucre"],
+["icon-nappage-chocolat.png","Chocolat"],
+["icon-nappage-creme-de-marron.png","Crème"],
+["icon-nappage-fraise.png","Fraise"],
+["icon-nappage-caramel.png","Caramel"]
+];
+
+const topping = [
+["icon-topping-kinder-bueno.png","Kinder"],
+["icon-topping-oreo.png","Oreo"],
+["icon-topping-sprinkles.png","Sprinkles"],
+["icon-topping-chantilly.png","Chantilly"],
+["icon-topping-coco-rape.png","Coco"],
+["icon-topping-speculos.png","Speculos"]
+];
+
+const options = [
+["icon-options-boule-de-glace.png","Boule glace"],
+["icon-options-banane.png","Banane"],
+["icon-options-fraise.png","Fraise"],
+["icon-options-myrtille.png","Myrtille"],
+["icon-options-framboise.png","Framboise"],
+["icon-options-pistache-concassees.png","Pistache"]
+];
+
+/* ================= BUILD ================= */
+
+function build(list){
+  return list.map(([img,name])=>`
+    <div class="card" onclick="toggle(this,'${name}')">
+      <img src="${img}">
+      <p>${name}</p>
+    </div>
+  `).join("");
+}
+
+/* ================= TOGGLE ================= */
+
+function toggle(el,name){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    currentOrder = currentOrder.filter(i=>i!==name);
+    total -= 1;
+  } else {
+    el.classList.add("selected");
+    currentOrder.push(name);
+    total += 1;
+
+    if(name === "Boule glace"){
+      showExtraParfums();
+    }
+  }
+
+  updateTotal();
+  updateCart();
+}
+
+/* ================= GLACE FLOW ================= */
+
+function showGlaceStep1(){
+
+  document.getElementById("dynamic").innerHTML = `
+    <div class="two">
+      <div class="card" onclick="selectType(this,'Pot')">
+        <img src="icon-pot.png">
+        <p>Pot</p>
+      </div>
+      <div class="card" onclick="selectType(this,'Cornet')">
+        <img src="icon-cornet.png">
+        <p>Cornet</p>
+      </div>
+    </div>
+  `;
+}
+
+function selectType(el,name){
+
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  currentOrder.push(name);
+
+  updateCart();
+  showGlaceStep2();
+}
+
+function showGlaceStep2(){
+
+  document.getElementById("dynamic").innerHTML = `
+    <div class="three">
+      <div class="card" onclick="chooseBoules(this,1,2.5)">
+        <img src="icon-1-boule.png">
+        <p>1 boule</p>
+      </div>
+      <div class="card" onclick="chooseBoules(this,2,4)">
+        <img src="icon-2-boules.png">
+        <p>2 boules</p>
+      </div>
+      <div class="card" onclick="chooseBoules(this,3,5)">
+        <img src="icon-3-boules.png">
+        <p>3 boules</p>
+      </div>
+    </div>
+  `;
+}
+
+function chooseBoules(el,nb,price){
+
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  bouleMax = nb;
+  bouleCount = 0;
+
+  total = price;
+
+  currentOrder = currentOrder.filter(i => !i.includes("boule"));
+  currentOrder.push(nb + " boules");
+
+  updateTotal();
+  updateCart();
+
+  showParfums();
+}
+
+/* ================= PARFUMS ================= */
+
+function showParfums(){
+
+  let old = document.getElementById("parfumsBlock");
+  if(old) old.remove();
+
+  const div = document.createElement("div");
+  div.id = "parfumsBlock";
+
+  div.innerHTML = `
+    <h3>Parfums</h3>
+    <div class="row">${buildParfums(true)}</div>
+  `;
+
+  document.getElementById("dynamic").appendChild(div);
+}
+
+function showExtraParfums(){
+
+  let old = document.getElementById("extraParfum");
+  if(old) old.remove();
+
+  const div = document.createElement("div");
+  div.id = "extraParfum";
+
+  div.innerHTML = `
+    <h3>Parfum (option)</h3>
+    <div class="row">${buildParfums(false)}</div>
+  `;
+
+  document.getElementById("dynamic").appendChild(div);
+}
+
+function buildParfums(limit){
+
+  const list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  return list.map(name=>`
+    <div class="card" onclick="selectParfum(this,'${name}',${limit})">
+      <img src="icon-parfum-glace-${name.toLowerCase().replace(/ /g,'-')}.png">
+      <p>${name}</p>
+    </div>
+  `).join("");
+}
+
+/* ================= PARFUM FIX ================= */
+
+function selectParfum(el,name,limit){
+
+  if(limit){
+    if(el.classList.contains("selected")){
+      el.classList.remove("selected");
+      bouleCount--;
+      currentOrder = currentOrder.filter(i=>i!==name);
+    } else {
+      if(bouleCount >= bouleMax) return;
+      el.classList.add("selected");
+      bouleCount++;
+      currentOrder.push(name);
+    }
+  } else {
+
+    const parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+    currentOrder = currentOrder.filter(i => !parfums.includes(i));
+
+    document.querySelectorAll("#extraParfum .card").forEach(e=>e.classList.remove("selected"));
+
+    el.classList.add("selected");
+    currentOrder.push(name);
+  }
+
+  updateCart();
+}

@@ -1,128 +1,101 @@
 body {
-    font-family: "Comic Sans MS", cursive;
-    background: #f4efe7;
-    margin: 0;
-    text-align: center;
+  margin: 0;
+  font-family: Arial;
+  background: #fff8f0;
 }
 
-/* HEADER */
+.container {
+  width: 768px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ================= HEADER FIXE ================= */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff8f0;
+  padding: 10px 0;
 }
 
-.logo {
-    width: 80px;
+.header img {
+  width: 96px;
 }
 
-.header-center {
-    background: #e8c7a1;
-    padding: 10px 25px;
-    border-radius: 25px;
-    font-size: 22px;
+#total {
+  font-size: 30px;
+  background: #fec1c3;
+  padding: 10px;
+  border-radius: 15px;
 }
 
-/* PRODUITS */
-.products {
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-    margin: 20px;
+/* GRID */
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin: 10px 0;
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.two {
+  display: grid;
+  grid-template-columns: repeat(2, 120px);
+  justify-content: center;
+}
+
+.three {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  justify-content: center;
+}
+
+/* CARD */
 .card {
-    background: white;
-    border-radius: 20px;
-    padding: 10px;
-    width: 130px;
-    cursor: pointer;
-    border: 3px solid #d9b38c;
-    transition: 0.2s;
+  text-align: center;
+  cursor: pointer;
 }
 
 .card img {
-    width: 100%;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 4px solid transparent;
 }
 
-.card span, .card p {
-    display: block;
-    margin-top: 5px;
+.selected img {
+  border: 4px solid #ed7985;
 }
 
-/* SELECTION */
-.selected {
-    border: 3px solid #6ec1e4;
-    box-shadow: 0 0 10px #6ec1e4;
+/* FOOTER */
+.footer {
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
 }
 
-/* BLOCS */
-.blocks {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
+button {
+  padding: 10px;
+  margin: 5px;
+  background: #ed7985;
+  color: white;
+  border: none;
+  border-radius: 10px;
 }
 
-.block {
-    background: #e8c7a1;
-    padding: 15px;
-    border-radius: 20px;
-    width: 260px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-/* PARFUMS */
-.flavors {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px;
-}
-
-/* BOUTONS */
-.actions button {
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    margin: 10px;
-    cursor: pointer;
-}
-
-#add {
-    background: #a6d6e7;
-}
-
-#reset {
-    background: #f28b8b;
-}
-
-/* PANIER */
-.bottom {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-}
-
-.total-circle {
-    background: #f3a5a5;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
+.reset {
+  background: #68b3d0;
 }
