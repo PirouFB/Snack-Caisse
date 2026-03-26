@@ -3,7 +3,7 @@ let basePrice = 0;
 
 let currentOrder = [];
 let orders = [];
-let orderPrices = []; // 🔥 IMPORTANT
+let orderPrices = [];
 
 let bouleMax = 0;
 let bouleCount = 0;
@@ -76,7 +76,7 @@ function addToCart(){
   if(currentOrder.length === 0) return;
 
   orders.push([...currentOrder]);
-  orderPrices.push(total); // 🔥 sauvegarde prix
+  orderPrices.push(total);
 
   currentOrder = [];
   total = 0;
@@ -283,6 +283,9 @@ function showParfums(){
   `;
 
   document.getElementById("dynamic").appendChild(div);
+
+  // 🔥 AJOUT CHANTILLY
+  showChantillyChoice();
 }
 
 function showExtraParfums(){
@@ -311,6 +314,64 @@ function buildParfums(limit){
       <p>${name}</p>
     </div>
   `).join("");
+}
+
+/* ================= CHANTILLY ================= */
+
+function showChantillyChoice(){
+
+  let old = document.getElementById("chantillyBlock");
+  if(old) old.remove();
+
+  const div = document.createElement("div");
+  div.id = "chantillyBlock";
+
+  div.innerHTML = `
+    <h3>Chantilly</h3>
+    <div class="two">
+      <div class="card" onclick="selectChantilly(this,'Chantilly OUI')">
+        <img src="icon-chantilly-oui.png">
+        <p>OUI</p>
+      </div>
+      <div class="card" onclick="selectChantilly(this,'Chantilly NON')">
+        <img src="icon-chantilly-non.png">
+        <p>NON</p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("dynamic").appendChild(div);
+}
+
+function selectChantilly(el, choice){
+
+  // reset visuel
+  document.querySelectorAll("#chantillyBlock .card")
+    .forEach(e => e.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  // vérifier si OUI était déjà sélectionné
+  let hadChantilly = currentOrder.find(i => i === "Chantilly OUI");
+
+  // supprimer ancien choix
+  currentOrder = currentOrder.filter(i => !i.includes("Chantilly"));
+
+  // retirer prix si on change
+  if(hadChantilly){
+    total -= 1;
+  }
+
+  // ajouter prix si OUI
+  if(choice === "Chantilly OUI"){
+    total += 1;
+  }
+
+  // ajouter nouveau choix
+  currentOrder.push(choice);
+
+  updateTotal();
+  updateCart();
 }
 
 /* ================= PARFUM FIX ================= */
