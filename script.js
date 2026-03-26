@@ -143,17 +143,17 @@ const nappage = [
 ["icon-nappage-nutella.png","Nutella"],
 ["icon-nappage-sucre.png","Sucre"],
 ["icon-nappage-chocolat.png","Chocolat"],
-["icon-nappage-creme-de-marron.png","Crème"],
+["icon-nappage-creme-de-marron.png","Crème de Marrons"],
 ["icon-nappage-fraise.png","Fraise"],
 ["icon-nappage-caramel.png","Caramel"]
 ];
 
 const topping = [
-["icon-topping-kinder-bueno.png","Kinder"],
+["icon-topping-kinder-bueno.png","Kinder Bueno"],
 ["icon-topping-oreo.png","Oreo"],
 ["icon-topping-sprinkles.png","Sprinkles"],
 ["icon-topping-chantilly.png","Chantilly"],
-["icon-topping-coco-rape.png","Coco"],
+["icon-topping-coco-rape.png","Coco Rapée"],
 ["icon-topping-speculos.png","Speculos"]
 ];
 
@@ -163,7 +163,7 @@ const options = [
 ["icon-options-fraise.png","Fraise"],
 ["icon-options-myrtille.png","Myrtille"],
 ["icon-options-framboise.png","Framboise"],
-["icon-options-pistache-concassees.png","Pistache"]
+["icon-options-pistache-concassees.png","Pistache Concassées"]
 ];
 
 /* ================= BUILD ================= */
@@ -297,7 +297,7 @@ function showExtraParfums(){
   div.id = "extraParfum";
 
   div.innerHTML = `
-    <h3>Parfum (option)</h3>
+    <h3>Parfum</h3>
     <div class="row">${buildParfums(false)}</div>
   `;
 
