@@ -1,10 +1,11 @@
 {
   "name": "La Vague Sucrée",
-  "short_name": "La Vague Sucrée",
+  "short_name": "Vague",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff8f0",
   "theme_color": "#ed7985",
+  "orientation": "landscape",
   "icons": [
     {
       "src": "icon.png",
