@@ -215,9 +215,6 @@ function toggle(el,name){
 
 function showExtraParfums(){
 
-  var old = document.getElementById("extraParfum");
-  if(old) old.parentNode.removeChild(old);
-
   var div = document.createElement("div");
   div.id = "extraParfum";
 
@@ -256,18 +253,65 @@ function selectParfum(el,name){
   }
 
   el.classList.add("selected");
-
-  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
-
-  var newOrder = [];
-  for(var i=0;i<currentOrder.length;i++){
-    if(parfums.indexOf(currentOrder[i]) === -1){
-      newOrder.push(currentOrder[i]);
-    }
-  }
-
-  currentOrder = newOrder;
   currentOrder.push(name);
 
+  updateCart();
+}
+
+/* ================= GLACE ================= */
+
+function showGlaceStep1(){
+
+  var html = "";
+  html += "<div class='two'>";
+  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><img src='icon-pot.png'><p>Pot</p></div>";
+  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><img src='icon-cornet.png'><p>Cornet</p></div>";
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
+}
+
+function selectType(el,name){
+
+  var selected = document.querySelectorAll(".selected");
+  for(var i=0;i<selected.length;i++){
+    selected[i].classList.remove("selected");
+  }
+
+  el.classList.add("selected");
+  currentOrder.push(name);
+
+  showGlaceStep2();
+}
+
+function showGlaceStep2(){
+
+  var html = "";
+  html += "<div class='three'>";
+  html += "<div class='card' onclick=\"chooseBoules(this,1,2.5)\"><p>1 boule</p></div>";
+  html += "<div class='card' onclick=\"chooseBoules(this,2,4)\"><p>2 boules</p></div>";
+  html += "<div class='card' onclick=\"chooseBoules(this,3,5)\"><p>3 boules</p></div>";
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
+}
+
+function chooseBoules(el,nb,price){
+
+  var selected = document.querySelectorAll(".selected");
+  for(var i=0;i<selected.length;i++){
+    selected[i].classList.remove("selected");
+  }
+
+  el.classList.add("selected");
+
+  bouleMax = nb;
+  bouleCount = 0;
+
+  total = price;
+
+  currentOrder.push(nb + " boules");
+
+  updateTotal();
   updateCart();
 }
