@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=768, initial-scale=1.0">
+
 <title>Caisse</title>
+
 <link rel="stylesheet" href="style.css">
+
+<!-- ✅ ICÔNE iPAD / iPHONE -->
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icon.png">
+
+<!-- ✅ MODE APP (PLEIN ÉCRAN) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
 </head>
 
 <body>
@@ -19,13 +32,18 @@
 
   <div class="row center">
     <div class="card" onclick="selectMain('Crêpes',2.5,this)">
-      <img src="icon-crepe.png"><p>Crêpes</p>
+      <img src="icon-crepe.png">
+      <p>Crêpes</p>
     </div>
+
     <div class="card" onclick="selectMain('Panini',3.5,this)">
-      <img src="icon-panini.png"><p>Panini</p>
+      <img src="icon-panini.png">
+      <p>Panini</p>
     </div>
+
     <div class="card" onclick="selectMain('Glace',0,this)">
-      <img src="icon-glace.png"><p>Glace</p>
+      <img src="icon-glace.png">
+      <p>Glace</p>
     </div>
   </div>
 
@@ -40,5 +58,6 @@
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
