@@ -186,9 +186,21 @@ function toggle(el,name){
   if(el.classList.contains("selected")){
     el.classList.remove("selected");
     total -= 1;
+
+    var newOrder = [];
+    for(var i=0;i<currentOrder.length;i++){
+      if(currentOrder[i] !== name){
+        newOrder.push(currentOrder[i]);
+      }
+    }
+    currentOrder = newOrder;
+
   } else {
+
     el.classList.add("selected");
     total += 1;
+
+    currentOrder.push(name);
 
     if(name === "Boule glace"){
       showExtraParfums();
@@ -203,9 +215,48 @@ function toggle(el,name){
 
 function showExtraParfums(){
 
-  var html = "<h3>Parfum</h3><div class='row'>" + buildParfums() + "</div>";
+  var old = document.getElementById("extraParfum");
+  if(old) old.parentNode.removeChild(old);
+
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+  var html = "<div id='extraParfum'><h3>Parfum</h3><div class='row'>";
+
+  for(var i=0;i<list.length;i++){
+    var name = list[i];
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfumCrepe(this,'" + name + "')\">";
+    html += "<img src='" + img + "'>";
+    html += "<p>" + name + "</p></div>";
+  }
+
+  html += "</div></div>";
 
   document.getElementById("dynamic").innerHTML += html;
+}
+
+function selectParfumCrepe(el,name){
+
+  var cards = document.querySelectorAll("#extraParfum .card");
+  for(var i=0;i<cards.length;i++){
+    cards[i].classList.remove("selected");
+  }
+
+  el.classList.add("selected");
+
+  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  var newOrder = [];
+  for(var i=0;i<currentOrder.length;i++){
+    if(parfums.indexOf(currentOrder[i]) === -1){
+      newOrder.push(currentOrder[i]);
+    }
+  }
+
+  currentOrder = newOrder;
+  currentOrder.push(name);
+
+  updateCart();
 }
 
 /* ================= GLACE ================= */
@@ -238,8 +289,6 @@ function showGlaceStep2(){
   document.getElementById("dynamic").innerHTML = html;
 }
 
-/* ================= FIX FINAL ================= */
-
 function chooseBoules(el,nb,price){
 
   total = price;
@@ -254,22 +303,17 @@ function chooseBoules(el,nb,price){
   showGlaceFinal();
 }
 
+/* ================= GLACE FINAL ================= */
+
 function showGlaceFinal(){
 
   var html = "";
-
   html += "<h3>Parfums</h3><div class='row'>" + buildParfums() + "</div>";
-
-  html += "<h3>Chantilly</h3>";
-  html += "<div class='two'>";
-  html += "<div class='card' onclick=\"selectChantilly(this,'OUI')\"><p>OUI</p></div>";
-  html += "<div class='card' onclick=\"selectChantilly(this,'NON')\"><p>NON</p></div>";
-  html += "</div>";
 
   document.getElementById("dynamic").innerHTML = html;
 }
 
-/* ================= PARFUM ================= */
+/* ================= PARFUM GLACE ================= */
 
 function buildParfums(){
 
@@ -280,26 +324,27 @@ function buildParfums(){
     var name = list[i];
     var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
 
-    html += "<div class='card'><img src='" + img + "'><p>" + name + "</p></div>";
+    html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
+    html += "<img src='" + img + "'>";
+    html += "<p>" + name + "</p></div>";
   }
 
   return html;
 }
 
-/* ================= CHANTILLY ================= */
+function selectParfumGlace(el,name){
 
-function selectChantilly(el,choice){
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    bouleCount--;
+  } else {
 
-  var cards = document.querySelectorAll(".two .card");
-  for(var i=0;i<cards.length;i++){
-    cards[i].classList.remove("selected");
+    if(bouleCount >= bouleMax) return;
+
+    el.classList.add("selected");
+    bouleCount++;
+    currentOrder.push(name);
   }
 
-  el.classList.add("selected");
-
-  if(choice === "OUI"){
-    total += 1;
-  }
-
-  updateTotal();
+  updateCart();
 }
