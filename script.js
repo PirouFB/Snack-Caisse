@@ -6,7 +6,7 @@ var orderPrices = [];
 var bouleMax = 0;
 var bouleCount = 0;
 
-/* TOTAL */
+/* ================= TOTAL ================= */
 
 function updateTotal(){
   document.getElementById("total").innerHTML = total.toFixed(2) + "€";
@@ -20,10 +20,9 @@ function getCartTotal(){
   return sum;
 }
 
-/* CART */
+/* ================= CART ================= */
 
 function updateCart(){
-
   var html = "";
 
   for(var i=0;i<orders.length;i++){
@@ -36,7 +35,7 @@ function updateCart(){
   document.getElementById("cart").innerHTML = html;
 }
 
-/* RESET */
+/* ================= RESET ================= */
 
 function resetAll(){
   total = 0;
@@ -57,7 +56,7 @@ function resetAll(){
   updateCart();
 }
 
-/* ADD */
+/* ================= ADD ================= */
 
 function addToCart(){
 
@@ -75,7 +74,7 @@ function addToCart(){
   updateCart();
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 
 function selectMain(name, price, el){
 
@@ -95,63 +94,46 @@ function selectMain(name, price, el){
   else showCrepePanini();
 }
 
-/* CREPES */
+/* ================= CREPES ================= */
 
 function showCrepePanini(){
 
-  var html = "<h3>Nappage</h3><div class='row'>" + build(nappage) + "</div>";
-  html += "<h3>Topping</h3><div class='row'>" + build(topping) + "</div>";
-  html += "<h3>Options</h3><div class='row'>" + build(options) + "</div>";
+  var html = "";
+  html += "<h3>Options</h3>";
+  html += "<div class='row'>";
+  html += "<div class='card' onclick=\"toggle(this,'Boule glace')\"><p>Boule glace</p></div>";
+  html += "</div>";
 
   document.getElementById("dynamic").innerHTML = html;
 }
 
-/* DATA */
-
-var nappage = [["icon-nappage-nutella.png","Nutella"]];
-var topping = [["icon-topping-oreo.png","Oreo"]];
-var options = [["icon-options-boule-de-glace.png","Boule glace"]];
-
-/* BUILD */
-
-function build(list){
-
-  var html = "";
-
-  for(var i=0;i<list.length;i++){
-    html += "<div class='card' onclick=\"toggle(this,'" + list[i][1] + "')\">";
-    html += "<p>" + list[i][1] + "</p></div>";
-  }
-
-  return html;
-}
-
-/* TOGGLE */
-
 function toggle(el,name){
 
   el.classList.toggle("selected");
-  currentOrder.push(name);
 
   if(name === "Boule glace"){
     showExtraParfums();
   }
 }
 
-/* PARFUM CREPE */
-
 function showExtraParfums(){
-  document.getElementById("dynamic").innerHTML += "<h3>Parfum</h3><p>Choix parfum OK</p>";
+  var html = "<h3>Parfum</h3>";
+  html += "<p>Choix parfum OK</p>";
+
+  document.getElementById("dynamic").innerHTML += html;
 }
 
-/* GLACE */
+/* ================= GLACE ================= */
 
 function showGlaceStep1(){
-  document.getElementById("dynamic").innerHTML =
-    "<div class='two'>" +
-    "<div class='card' onclick=\"selectType(this,'Pot')\"><p>Pot</p></div>" +
-    "<div class='card' onclick=\"selectType(this,'Cornet')\"><p>Cornet</p></div>" +
-    "</div>";
+
+  var html = "";
+  html += "<div class='two'>";
+  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><p>Pot</p></div>";
+  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><p>Cornet</p></div>";
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
 }
 
 function selectType(el,name){
@@ -160,13 +142,18 @@ function selectType(el,name){
 }
 
 function showGlaceStep2(){
-  document.getElementById("dynamic").innerHTML =
-    "<div class='three'>" +
-    "<div class='card' onclick=\"chooseBoules(this,1,2.5)\"><p>1 boule</p></div>" +
-    "<div class='card' onclick=\"chooseBoules(this,2,4)\"><p>2 boules</p></div>" +
-    "<div class='card' onclick=\"chooseBoules(this,3,5)\"><p>3 boules</p></div>" +
-    "</div>";
+
+  var html = "";
+  html += "<div class='three'>";
+  html += "<div class='card' onclick=\"chooseBoules(this,1,2.5)\"><p>1 boule</p></div>";
+  html += "<div class='card' onclick=\"chooseBoules(this,2,4)\"><p>2 boules</p></div>";
+  html += "<div class='card' onclick=\"chooseBoules(this,3,5)\"><p>3 boules</p></div>";
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
 }
+
+/* ================= FIX FINAL ================= */
 
 function chooseBoules(el,nb,price){
 
@@ -174,19 +161,74 @@ function chooseBoules(el,nb,price){
   bouleMax = nb;
   bouleCount = 0;
 
-  updateTotal();
+  currentOrder.push(nb + " boules");
 
-  setTimeout(function(){
-    showParfums();
-  },10);
+  updateTotal();
+  updateCart();
+
+  showGlaceFinal(); // 🔥 IMPORTANT
 }
 
-/* PARFUM GLACE + CHANTILLY */
+/* ================= AFFICHAGE FINAL ================= */
 
-function showParfums(){
+function showGlaceFinal(){
 
-  var html = "<h3>Parfums</h3><p>Choix parfum affiché</p>";
-  html += "<h3>Chantilly</h3><p>OUI / NON</p>";
+  var html = "";
 
-  document.getElementById("dynamic").innerHTML += html;
+  // PARFUMS
+  html += "<h3>Parfums</h3><div class='row'>";
+
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  for(var i=0;i<list.length;i++){
+    var name = list[i];
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
+    html += "<img src='" + img + "'>";
+    html += "<p>" + name + "</p></div>";
+  }
+
+  html += "</div>";
+
+  // CHANTILLY
+  html += "<h3>Chantilly</h3>";
+  html += "<div class='two'>";
+  html += "<div class='card' onclick=\"selectChantilly(this,'OUI')\"><p>OUI</p></div>";
+  html += "<div class='card' onclick=\"selectChantilly(this,'NON')\"><p>NON</p></div>";
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
+}
+
+/* ================= ACTIONS ================= */
+
+function selectParfumGlace(el,name){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    bouleCount--;
+  } else {
+    if(bouleCount >= bouleMax) return;
+    el.classList.add("selected");
+    bouleCount++;
+  }
+
+  updateCart();
+}
+
+function selectChantilly(el,choice){
+
+  var cards = document.querySelectorAll(".two .card");
+  for(var i=0;i<cards.length;i++){
+    cards[i].classList.remove("selected");
+  }
+
+  el.classList.add("selected");
+
+  if(choice === "OUI"){
+    total += 1;
+  }
+
+  updateTotal();
 }
