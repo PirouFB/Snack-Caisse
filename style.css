@@ -12,9 +12,9 @@ body {
   align-items: center;
 }
 
-/* HEADER FIX iPad */
+/* FIX iPad (plus de sticky) */
 .header {
-  position: relative; /* ⚠️ plus de sticky */
+  position: relative;
   z-index: 10;
   width: 100%;
   display: flex;
@@ -99,7 +99,7 @@ button {
   background: #68b3d0;
 }
 
-/* FIX CLIC iPad */
+/* FIX clic iPad */
 * {
   pointer-events: auto !important;
 }
