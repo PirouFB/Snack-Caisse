@@ -56,10 +56,7 @@ function resetAll(){
 
   document.getElementById("dynamic").innerHTML = "";
 
-  var selected = document.querySelectorAll(".selected");
-  for(var i=0;i<selected.length;i++){
-    selected[i].classList.remove("selected");
-  }
+  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
 
   updateTotal();
   updateCart();
@@ -71,23 +68,31 @@ function addToCart(){
 
   if(currentOrder.length === 0) return;
 
+  // vérification chantilly pour glace
+  if(currentOrder.includes("Pot") || currentOrder.includes("Cornet")){
+    var hasChantilly = currentOrder.includes("Chantilly Oui") || currentOrder.includes("Chantilly Non");
+    if(!hasChantilly){
+      alert("Choisissez la crème fouettée !");
+      return;
+    }
+  }
+
+  // ✅ on ajoute au panier
   orders.push(currentOrder.slice());
   orderPrices.push(total);
 
+  // ✅ reset UNIQUEMENT la commande en cours
   currentOrder = [];
   total = 0;
   basePrice = 0;
-
   bouleMax = 0;
   bouleCount = 0;
 
   document.getElementById("dynamic").innerHTML = "";
 
-  var selected = document.querySelectorAll(".selected");
-  for(var i=0;i<selected.length;i++){
-    selected[i].classList.remove("selected");
-  }
+  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
 
+  // ✅ IMPORTANT : on met à jour après ajout
   updateTotal();
   updateCart();
 }
@@ -104,16 +109,12 @@ function removeOrder(index){
 
 function selectMain(name, price, el){
 
-  var selected = document.querySelectorAll(".selected");
-  for(var i=0;i<selected.length;i++){
-    selected[i].classList.remove("selected");
-  }
+  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
 
   el.classList.add("selected");
 
   basePrice = price;
   total = price;
-
   currentOrder = [name];
 
   updateTotal();
@@ -187,74 +188,64 @@ function toggle(el,name){
     el.classList.remove("selected");
     total -= 1;
 
-    var newOrder = [];
-    for(var i=0;i<currentOrder.length;i++){
-      if(currentOrder[i] !== name){
-        newOrder.push(currentOrder[i]);
-      }
-    }
-    currentOrder = newOrder;
+    currentOrder = currentOrder.filter(item => item !== name);
+
+    if(name === "Boule glace") removeExtraParfums();
 
   } else {
 
     el.classList.add("selected");
     total += 1;
-
     currentOrder.push(name);
 
-    if(name === "Boule glace"){
-      showExtraParfums();
-    }
+    if(name === "Boule glace") showExtraParfums();
   }
 
   updateTotal();
   updateCart();
 }
 
-/* ================= PARFUM CREPE ================= */
+/* ================= EXTRA PARFUM CREPE ================= */
 
 function showExtraParfums(){
 
-  var old = document.getElementById("extraParfum");
-  if(old) old.parentNode.removeChild(old);
+  if(document.getElementById("extraParfum")) return;
 
   var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
   var html = "<div id='extraParfum'><h3>Parfum</h3><div class='row'>";
 
-  for(var i=0;i<list.length;i++){
-    var name = list[i];
+  list.forEach(name => {
     var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
 
     html += "<div class='card' onclick=\"selectParfumCrepe(this,'" + name + "')\">";
-    html += "<img src='" + img + "'>";
-    html += "<p>" + name + "</p></div>";
-  }
+    html += "<img src='" + img + "'><p>" + name + "</p></div>";
+  });
 
   html += "</div></div>";
 
   document.getElementById("dynamic").innerHTML += html;
 }
 
+function removeExtraParfums(){
+  var el = document.getElementById("extraParfum");
+  if(el) el.remove();
+
+  currentOrder = currentOrder.filter(item =>
+    !["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"].includes(item)
+  );
+}
+
 function selectParfumCrepe(el,name){
 
-  var cards = document.querySelectorAll("#extraParfum .card");
-  for(var i=0;i<cards.length;i++){
-    cards[i].classList.remove("selected");
-  }
+  document.querySelectorAll("#extraParfum .card").forEach(c => c.classList.remove("selected"));
 
   el.classList.add("selected");
 
-  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
-
-  var newOrder = [];
-  for(var i=0;i<currentOrder.length;i++){
-    if(parfums.indexOf(currentOrder[i]) === -1){
-      newOrder.push(currentOrder[i]);
-    }
-  }
-
-  currentOrder = newOrder;
+  removeExtraParfums();
   currentOrder.push(name);
+
+  showExtraParfums();
 
   updateCart();
 }
@@ -263,13 +254,11 @@ function selectParfumCrepe(el,name){
 
 function showGlaceStep1(){
 
-  var html = "";
-  html += "<div class='two'>";
-  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><img src='icon-pot.png'><p>Pot</p></div>";
-  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><img src='icon-cornet.png'><p>Cornet</p></div>";
-  html += "</div>";
-
-  document.getElementById("dynamic").innerHTML = html;
+  document.getElementById("dynamic").innerHTML = `
+    <div class='two'>
+      <div class='card' onclick="selectType(this,'Pot')"><img src='icon-pot.png'><p>Pot</p></div>
+      <div class='card' onclick="selectType(this,'Cornet')"><img src='icon-cornet.png'><p>Cornet</p></div>
+    </div>`;
 }
 
 function selectType(el,name){
@@ -279,14 +268,12 @@ function selectType(el,name){
 
 function showGlaceStep2(){
 
-  var html = "";
-  html += "<div class='three'>";
-  html += "<div class='card' onclick=\"chooseBoules(this,1,2.5)\"><img src='icon-1-boule.png'><p>1 boule</p></div>";
-  html += "<div class='card' onclick=\"chooseBoules(this,2,4)\"><img src='icon-2-boules.png'><p>2 boules</p></div>";
-  html += "<div class='card' onclick=\"chooseBoules(this,3,5)\"><img src='icon-3-boules.png'><p>3 boules</p></div>";
-  html += "</div>";
-
-  document.getElementById("dynamic").innerHTML = html;
+  document.getElementById("dynamic").innerHTML = `
+    <div class='three'>
+      <div class='card' onclick="chooseBoules(this,1,2.5)"><img src='icon-1-boule.png'><p>1 boule</p></div>
+      <div class='card' onclick="chooseBoules(this,2,4)"><img src='icon-2-boules.png'><p>2 boules</p></div>
+      <div class='card' onclick="chooseBoules(this,3,5)"><img src='icon-3-boules.png'><p>3 boules</p></div>
+    </div>`;
 }
 
 function chooseBoules(el,nb,price){
@@ -309,6 +296,7 @@ function showGlaceFinal(){
 
   var html = "";
   html += "<h3>Parfums</h3><div class='row'>" + buildParfums() + "</div>";
+  html += buildChantilly();
 
   document.getElementById("dynamic").innerHTML = html;
 }
@@ -320,14 +308,12 @@ function buildParfums(){
   var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
   var html = "";
 
-  for(var i=0;i<list.length;i++){
-    var name = list[i];
+  list.forEach(name => {
     var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
 
     html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
-    html += "<img src='" + img + "'>";
-    html += "<p>" + name + "</p></div>";
-  }
+    html += "<img src='" + img + "'><p>" + name + "</p></div>";
+  });
 
   return html;
 }
@@ -346,5 +332,45 @@ function selectParfumGlace(el,name){
     currentOrder.push(name);
   }
 
+  updateCart();
+}
+
+/* ================= CHANTILLY ================= */
+
+function buildChantilly(){
+
+  return `
+  <div id='chantillyBlock'>
+    <h3>Crème fouettée</h3>
+    <div class='two'>
+      <div class='card' onclick="selectChantilly(this,'Oui',1)">
+        <img src='icon-chantilly-oui.png'><p>Oui</p>
+      </div>
+      <div class='card' onclick="selectChantilly(this,'Non',0)">
+        <img src='icon-chantilly-non.png'><p>Non</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectChantilly(el, choix, prix){
+
+  document.querySelectorAll("#chantillyBlock .card").forEach(c => c.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  var hadOui = currentOrder.includes("Chantilly Oui");
+
+  currentOrder = currentOrder.filter(item =>
+    item !== "Chantilly Oui" && item !== "Chantilly Non"
+  );
+
+  if(hadOui) total -= 1;
+
+  total += prix;
+
+  currentOrder.push("Chantilly " + choix);
+
+  updateTotal();
   updateCart();
 }
