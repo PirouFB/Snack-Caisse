@@ -1,4 +1,4 @@
-const CACHE_NAME = "caisse-cache-v2";
+const CACHE_NAME = "caisse-cache-v4";
 
 const urlsToCache = [
   "./",
@@ -17,7 +17,6 @@ const urlsToCache = [
   "./icon-cornet.png",
   "./icon-1-boule.png",
   "./icon-2-boules.png",
-  "./icon-3-boules.png",
 
   // NAPPAGE
   "./icon-nappage-nutella.png",
@@ -54,4 +53,5 @@ const urlsToCache = [
   // CHANTILLY
   "./icon-chantilly-oui.png",
   "./icon-chantilly-non.png"
-];
+
+});

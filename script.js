@@ -279,7 +279,6 @@ function showGlaceStep2(){
     <div class='three'>
       <div class='card' onclick="chooseBoules(this,1,2.5)"><img src='icon-1-boule.png'><p>1 boule</p></div>
       <div class='card' onclick="chooseBoules(this,2,4)"><img src='icon-2-boules.png'><p>2 boules</p></div>
-      <div class='card' onclick="chooseBoules(this,3,5)"><img src='icon-3-boules.png'><p>3 boules</p></div>
     </div>`;
 }
 
@@ -393,4 +392,3 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
-

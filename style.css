@@ -57,9 +57,10 @@ body {
 }
 
 .three {
-  display: grid;
-  grid-template-columns: repeat(3, 120px);
-  justify-content: center;
+  display: flex;
+  justify-content: center; /* centre horizontal */
+  align-items: center;
+  gap: 20px;
 }
 
 /* CARD */
