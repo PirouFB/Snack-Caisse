@@ -381,3 +381,16 @@ function selectChantilly(el, choix, prix){
   updateTotal();
   updateCart();
 }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./service-worker.js')
+      .then(function(reg){
+        console.log("Service Worker OK", reg);
+      })
+      .catch(function(err){
+        console.log("Erreur Service Worker :", err);
+      });
+  });
+}
+
