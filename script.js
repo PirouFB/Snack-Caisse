@@ -211,41 +211,63 @@ function toggle(el,name){
   updateCart();
 }
 
-/* ================= GLACE ================= */
+/* ================= PARFUM ================= */
 
-function showGlaceStep1(){
+function showExtraParfums(){
 
-  var html = "";
-  html += "<div class='two'>";
-  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><img src='icon-pot.png'><p>Pot</p></div>";
-  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><img src='icon-cornet.png'><p>Cornet</p></div>";
+  var old = document.getElementById("extraParfum");
+  if(old) old.parentNode.removeChild(old);
+
+  var div = document.createElement("div");
+  div.id = "extraParfum";
+
+  var html = "<h3>Parfum</h3><div class='row'>";
+  html += buildParfums();
   html += "</div>";
 
-  document.getElementById("dynamic").innerHTML = html;
+  div.innerHTML = html;
+
+  document.getElementById("dynamic").appendChild(div);
 }
 
-function selectType(el,name){
+function buildParfums(){
 
-  var selected = document.querySelectorAll(".selected");
-  for(var i=0;i<selected.length;i++){
-    selected[i].classList.remove("selected");
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  var html = "";
+
+  for(var i=0;i<list.length;i++){
+    var name = list[i];
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfum(this,'" + name + "')\">";
+    html += "<img src='" + img + "'>";
+    html += "<p>" + name + "</p></div>";
+  }
+
+  return html;
+}
+
+function selectParfum(el,name){
+
+  var cards = document.querySelectorAll("#extraParfum .card");
+  for(var i=0;i<cards.length;i++){
+    cards[i].classList.remove("selected");
   }
 
   el.classList.add("selected");
+
+  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  var newOrder = [];
+  for(var i=0;i<currentOrder.length;i++){
+    if(parfums.indexOf(currentOrder[i]) === -1){
+      newOrder.push(currentOrder[i]);
+    }
+  }
+
+  currentOrder = newOrder;
   currentOrder.push(name);
 
   updateCart();
-  showGlaceStep2();
-}
-
-function showGlaceStep2(){
-
-  var html = "";
-  html += "<div class='three'>";
-  html += "<div class='card' onclick=\"chooseBoules(this,1,2.5)\"><img src='icon-1-boule.png'><p>1 boule</p></div>";
-  html += "<div class='card' onclick=\"chooseBoules(this,2,4)\"><img src='icon-2-boules.png'><p>2 boules</p></div>";
-  html += "<div class='card' onclick=\"chooseBoules(this,3,5)\"><img src='icon-3-boules.png'><p>3 boules</p></div>";
-  html += "</div>";
-
-  document.getElementById("dynamic").innerHTML = html;
 }
