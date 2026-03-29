@@ -211,15 +211,18 @@ function toggle(el,name){
   updateCart();
 }
 
-/* ================= PARFUM ================= */
+/* ================= PARFUM CREPE ================= */
 
 function showExtraParfums(){
+
+  var old = document.getElementById("extraParfum");
+  if(old) old.parentNode.removeChild(old);
 
   var div = document.createElement("div");
   div.id = "extraParfum";
 
   var html = "<h3>Parfum</h3><div class='row'>";
-  html += buildParfums();
+  html += buildParfumsSimple();
   html += "</div>";
 
   div.innerHTML = html;
@@ -227,17 +230,16 @@ function showExtraParfums(){
   document.getElementById("dynamic").appendChild(div);
 }
 
-function buildParfums(){
+function buildParfumsSimple(){
 
   var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
-
   var html = "";
 
   for(var i=0;i<list.length;i++){
     var name = list[i];
     var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
 
-    html += "<div class='card' onclick=\"selectParfum(this,'" + name + "')\">";
+    html += "<div class='card' onclick=\"selectParfumSimple(this,'" + name + "')\">";
     html += "<img src='" + img + "'>";
     html += "<p>" + name + "</p></div>";
   }
@@ -245,7 +247,7 @@ function buildParfums(){
   return html;
 }
 
-function selectParfum(el,name){
+function selectParfumSimple(el,name){
 
   var cards = document.querySelectorAll("#extraParfum .card");
   for(var i=0;i<cards.length;i++){
@@ -253,8 +255,8 @@ function selectParfum(el,name){
   }
 
   el.classList.add("selected");
-  currentOrder.push(name);
 
+  currentOrder.push(name);
   updateCart();
 }
 
@@ -264,8 +266,8 @@ function showGlaceStep1(){
 
   var html = "";
   html += "<div class='two'>";
-  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><img src='icon-pot.png'><p>Pot</p></div>";
-  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><img src='icon-cornet.png'><p>Cornet</p></div>";
+  html += "<div class='card' onclick=\"selectType(this,'Pot')\"><p>Pot</p></div>";
+  html += "<div class='card' onclick=\"selectType(this,'Cornet')\"><p>Cornet</p></div>";
   html += "</div>";
 
   document.getElementById("dynamic").innerHTML = html;
@@ -311,6 +313,95 @@ function chooseBoules(el,nb,price){
   total = price;
 
   currentOrder.push(nb + " boules");
+
+  updateTotal();
+  updateCart();
+
+  showParfums(); // 🔥 IMPORTANT
+}
+
+/* ================= PARFUM GLACE ================= */
+
+function showParfums(){
+
+  var div = document.createElement("div");
+  div.id = "parfumsBlock";
+
+  var html = "<h3>Parfums</h3><div class='row'>";
+  html += buildParfumsGlace();
+  html += "</div>";
+
+  div.innerHTML = html;
+
+  document.getElementById("dynamic").appendChild(div);
+
+  showChantillyChoice();
+}
+
+function buildParfumsGlace(){
+
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+  var html = "";
+
+  for(var i=0;i<list.length;i++){
+    var name = list[i];
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
+    html += "<img src='" + img + "'>";
+    html += "<p>" + name + "</p></div>";
+  }
+
+  return html;
+}
+
+function selectParfumGlace(el,name){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    bouleCount--;
+  } else {
+    if(bouleCount >= bouleMax) return;
+    el.classList.add("selected");
+    bouleCount++;
+    currentOrder.push(name);
+  }
+
+  updateCart();
+}
+
+/* ================= CHANTILLY ================= */
+
+function showChantillyChoice(){
+
+  var div = document.createElement("div");
+  div.id = "chantillyBlock";
+
+  var html = "<h3>Chantilly</h3>";
+  html += "<div class='two'>";
+  html += "<div class='card' onclick=\"selectChantilly(this,'OUI')\"><p>OUI</p></div>";
+  html += "<div class='card' onclick=\"selectChantilly(this,'NON')\"><p>NON</p></div>";
+  html += "</div>";
+
+  div.innerHTML = html;
+
+  document.getElementById("dynamic").appendChild(div);
+}
+
+function selectChantilly(el,choice){
+
+  var cards = document.querySelectorAll("#chantillyBlock .card");
+  for(var i=0;i<cards.length;i++){
+    cards[i].classList.remove("selected");
+  }
+
+  el.classList.add("selected");
+
+  currentOrder.push("Chantilly " + choice);
+
+  if(choice === "OUI"){
+    total += 1;
+  }
 
   updateTotal();
   updateCart();
