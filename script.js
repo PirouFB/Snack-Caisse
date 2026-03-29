@@ -238,14 +238,21 @@ function removeExtraParfums(){
 
 function selectParfumCrepe(el,name){
 
-  document.querySelectorAll("#extraParfum .card").forEach(c => c.classList.remove("selected"));
+  // reset visuel
+  var cards = document.querySelectorAll("#extraParfum .card");
+  for(var i=0;i<cards.length;i++){
+    cards[i].classList.remove("selected");
+  }
 
   el.classList.add("selected");
 
-  removeExtraParfums();
-  currentOrder.push(name);
+  // retirer anciens parfums
+  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
 
-  showExtraParfums();
+  currentOrder = currentOrder.filter(item => !parfums.includes(item));
+
+  // ajouter nouveau parfum
+  currentOrder.push(name);
 
   updateCart();
 }
