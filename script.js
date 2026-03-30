@@ -30,10 +30,83 @@ function selectMain(name, price, el){
   updateTotal();
 
   if(name === "Glace") showGlaceStep1();
+  else if(name === "Boissons") showBoissonStep1();
   else showCrepePanini();
 }
 
-/* ================= CREPES ================= */
+/* ================= BOISSONS ================= */
+
+function showBoissonStep1(){
+  document.getElementById("dynamic").innerHTML = `
+    <div class='two'>
+      <div class='card' onclick="selectBoissonType(this,'Boisson froide')">
+        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
+      </div>
+      <div class='card' onclick="selectBoissonType(this,'Boisson chaude')">
+        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
+      </div>
+    </div>
+  `;
+}
+
+function selectBoissonType(el, type){
+
+  document.querySelectorAll(".two .card").forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+
+  currentOrder = [currentMain, type];
+
+  if(type === "Boisson froide") showBoissonsFroides();
+  else showBoissonsChaudes();
+}
+
+const boissonsFroides = [
+["icon-coca.png","Coca"],
+["icon-ice-tea.png","Ice Tea"],
+["icon-oasis.png","Oasis"],
+["icon-eau.png","Eau"]
+];
+
+const boissonsChaudes = [
+["icon-cafe.png","Café"],
+["icon-chocolat-chaud.png","Chocolat chaud"],
+["icon-the.png","Thé"]
+];
+
+function showBoissonsFroides(){
+  document.getElementById("dynamic").innerHTML += `
+    <h3>Boissons froides</h3>
+    <div class='row'>${buildBoisson(boissonsFroides)}</div>
+  `;
+}
+
+function showBoissonsChaudes(){
+  document.getElementById("dynamic").innerHTML += `
+    <h3>Boissons chaudes</h3>
+    <div class='row'>${buildBoisson(boissonsChaudes)}</div>
+  `;
+}
+
+function buildBoisson(list){
+  return list.map(i=>`
+    <div class='card' onclick="selectBoisson(this,'${i[1]}')">
+      <img src='${i[0]}'><p>${i[1]}</p>
+    </div>
+  `).join("");
+}
+
+function selectBoisson(el, name){
+
+  document.querySelectorAll(".row .card").forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+
+  currentOrder = [currentMain, currentOrder[1], name];
+
+  total = 2;
+  updateTotal();
+}
+
+/* ================= CREPES / PANINI ================= */
 
 function showCrepePanini(){
 
@@ -301,7 +374,7 @@ function validerCommande(){
 
   saved.push({
     date: new Date().toLocaleString(),
-    items: cart.map(o => o.items.join(" + ")),
+    items: cart,
     total: cartTotal
   });
 
@@ -323,27 +396,34 @@ function renderBilan(){
   const data = JSON.parse(localStorage.getItem("orders") || "[]");
 
   if(data.length === 0){
-    container.innerHTML = "<p>Aucune commande enregistrée</p>";
+    container.innerHTML = "<p>Aucune commande</p>";
     return;
   }
 
   let totalJournee = 0;
 
-  container.innerHTML = data.map(order => {
+  container.innerHTML = data.map((order, index) => {
 
     totalJournee += order.total;
 
     return `
       <div style="background:#ffe3e6;padding:15px;margin:10px;border-radius:10px;">
+        
+        <strong>🧾 Commande #${index + 1}</strong><br>
         🕒 ${order.date}<br><br>
-        ${order.items.map(i => "• " + i).join("<br>")}
+
+        ${order.items.map(p => `
+          • ${p.items.join(" + ")} = ${p.price.toFixed(2)}€
+        `).join("<br>")}
+
         <br><br>
-        <strong>${order.total.toFixed(2)}€</strong>
+        <strong>Total : ${order.total.toFixed(2)}€</strong>
+
       </div>
     `;
   }).join("") + `
-    <div style="margin-top:20px;font-size:20px;">
-      💰 TOTAL JOURNÉE : <strong>${totalJournee.toFixed(2)}€</strong>
+    <div style="font-size:20px;margin-top:20px;">
+      💰 TOTAL JOURNÉE : ${totalJournee.toFixed(2)}€
     </div>
   `;
 }
@@ -377,19 +457,3 @@ function toggleMenu(){
   let menu = document.getElementById("sideMenu");
   menu.style.left = (menu.style.left === "0px") ? "-220px" : "0px";
 }
-
-/* ================= GLOBAL ================= */
-
-window.validerCommande = validerCommande;
-window.addToCart = addToCart;
-window.resetAll = resetAll;
-window.selectMain = selectMain;
-window.toggle = toggle;
-window.selectType = selectType;
-window.selectBoules = selectBoules;
-window.selectParfum = selectParfum;
-window.selectChantilly = selectChantilly;
-window.showPage = showPage;
-window.toggleMenu = toggleMenu;
-window.renderBilan = renderBilan;
-window.resetJournee = resetJournee;

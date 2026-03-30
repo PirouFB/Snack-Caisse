@@ -9,19 +9,9 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- ✅ MANIFEST -->
 <link rel="manifest" href="manifest.json">
 
-<!-- ✅ ICÔNE IOS (IMPORTANT 🔥) -->
 <link rel="apple-touch-icon" href="icon.png">
-<link rel="apple-touch-icon" sizes="192x192" href="icon.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon.png">
-
-<!-- ✅ MODE APPLE -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-
-<!-- ✅ COULEUR -->
 <meta name="theme-color" content="#ed7985">
 
 </head>
@@ -35,7 +25,6 @@
   <div onclick="showPage('bilan')">📊 Bilan</div>
 </div>
 
-<!-- CAISSE -->
 <div class="container" id="caissePage">
 
   <div class="header">
@@ -45,6 +34,7 @@
   </div>
 
   <div class="main-products">
+
     <div class="card big" onclick="selectMain('Crêpes',2.5,this)">
       <img src="icon-crepe.png"><p>Crêpes</p>
     </div>
@@ -56,6 +46,12 @@
     <div class="card big" onclick="selectMain('Glace',0,this)">
       <img src="icon-glace.png"><p>Glace</p>
     </div>
+
+    <!-- ✅ NOUVEAU -->
+    <div class="card big" onclick="selectMain('Boissons',0,this)">
+      <img src="icon-boissons.png"><p>Boissons</p>
+    </div>
+
   </div>
 
   <div id="dynamic"></div>
@@ -72,7 +68,6 @@
 
 </div>
 
-<!-- BILAN -->
 <div class="container" id="bilanPage" style="display:none;">
   <h2>📊 Bilan de la journée</h2>
   <div id="bilanContent"></div>
@@ -81,12 +76,9 @@
 
 <script src="script.js"></script>
 
-<!-- ✅ SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("SW enregistré"))
-    .catch(err => console.log("Erreur SW:", err));
+  navigator.serviceWorker.register("service-worker.js");
 }
 </script>
 
