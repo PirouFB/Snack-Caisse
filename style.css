@@ -104,3 +104,42 @@ button {
 * {
   pointer-events: auto !important;
 }
+
+.menu-btn{
+  font-size:30px;
+  padding:10px;
+  cursor:pointer;
+}
+
+.menu{
+  position:absolute;
+  top:60px;
+  right:10px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  padding:10px;
+  z-index:100;
+}
+
+.menu div{
+  padding:10px;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none;
+}
+
+#bilanView{
+  width:100%;
+  text-align:center;
+}
+
+.bilan-card{
+  background:#ffe3e6;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+  text-align:left;
+}

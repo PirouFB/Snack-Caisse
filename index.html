@@ -12,14 +12,8 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- ✅ ICÔNE iPAD / iPHONE -->
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-<link rel="apple-touch-icon" sizes="120x120" href="icon.png">
-
-<!-- ✅ MODE APP (PLEIN ÉCRAN) -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 </head>
 
@@ -28,39 +22,59 @@
 <div class="container">
 
   <div class="header">
-    <img src="logo-vague.png">
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
     <div id="total">0.00€</div>
+
     <img src="logo-manga.png">
   </div>
 
-  <div class="row center">
-    <div class="card" onclick="selectMain('Crêpes',2.5,this)">
-      <img src="icon-crepe.png">
-      <p>Crêpes</p>
-    </div>
-
-    <div class="card" onclick="selectMain('Panini',3.5,this)">
-      <img src="icon-panini.png">
-      <p>Panini</p>
-    </div>
-
-    <div class="card" onclick="selectMain('Glace',0,this)">
-      <img src="icon-glace.png">
-      <p>Glace</p>
-    </div>
+  <!-- MENU -->
+  <div id="menu" class="menu hidden">
+    <div onclick="showCaisse()">🧾 CAISSE</div>
+    <div onclick="showBilan()">📊 BILAN</div>
   </div>
 
-  <div id="dynamic"></div>
+  <!-- CAISSE -->
+  <div id="caisseView">
 
-  <div class="footer">
-    <button onclick="addToCart()">Ajouter</button>
-    <button class="reset" onclick="resetAll()">RESET</button>
-    <div id="cart"></div>
+    <div class="row center">
+      <div class="card" onclick="selectMain('Crêpes',2.5,this)">
+        <img src="icon-crepe.png">
+        <p>Crêpes</p>
+      </div>
+
+      <div class="card" onclick="selectMain('Panini',3.5,this)">
+        <img src="icon-panini.png">
+        <p>Panini</p>
+      </div>
+
+      <div class="card" onclick="selectMain('Glace',0,this)">
+        <img src="icon-glace.png">
+        <p>Glace</p>
+      </div>
+    </div>
+
+    <div id="dynamic"></div>
+
+    <div class="footer">
+      <button onclick="addToCart()">Ajouter</button>
+      <button onclick="validateCart()">Valider</button>
+      <button class="reset" onclick="resetAll()">RESET</button>
+      <div id="cart"></div>
+    </div>
+
+  </div>
+
+  <!-- BILAN -->
+  <div id="bilanView" class="hidden">
+    <h2>📊 Bilan du jour</h2>
+    <div id="bilan"></div>
+    <button onclick="endDay()">Fin de journée</button>
   </div>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>

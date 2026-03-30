@@ -1,9 +1,13 @@
+/* ================= VARIABLES ================= */
+
 var total = 0;
 var basePrice = 0;
 
 var currentOrder = [];
 var orders = [];
 var orderPrices = [];
+
+var dailyOrders = [];
 
 var bouleMax = 0;
 var bouleCount = 0;
@@ -20,6 +24,25 @@ function getCartTotal(){
     sum += orderPrices[i];
   }
   return sum;
+}
+
+/* ================= MENU ================= */
+
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("hidden");
+}
+
+function showCaisse(){
+  document.getElementById("caisseView").classList.remove("hidden");
+  document.getElementById("bilanView").classList.add("hidden");
+  toggleMenu();
+}
+
+function showBilan(){
+  document.getElementById("caisseView").classList.add("hidden");
+  document.getElementById("bilanView").classList.remove("hidden");
+  toggleMenu();
+  renderBilan();
 }
 
 /* ================= CART ================= */
@@ -68,7 +91,7 @@ function addToCart(){
 
   if(currentOrder.length === 0) return;
 
-  // vérification chantilly pour glace
+  // vérification chantilly glace
   if(currentOrder.includes("Pot") || currentOrder.includes("Cornet")){
     var hasChantilly = currentOrder.includes("Chantilly Oui") || currentOrder.includes("Chantilly Non");
     if(!hasChantilly){
@@ -77,11 +100,9 @@ function addToCart(){
     }
   }
 
-  // ✅ on ajoute au panier
   orders.push(currentOrder.slice());
   orderPrices.push(total);
 
-  // ✅ reset UNIQUEMENT la commande en cours
   currentOrder = [];
   total = 0;
   basePrice = 0;
@@ -92,8 +113,31 @@ function addToCart(){
 
   document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
 
-  // ✅ IMPORTANT : on met à jour après ajout
   updateTotal();
+  updateCart();
+}
+
+/* ================= VALIDER ================= */
+
+function validateCart(){
+
+  if(orders.length === 0) return;
+
+  var now = new Date();
+
+  var entry = {
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    items: JSON.parse(JSON.stringify(orders)),
+    prices: [...orderPrices],
+    total: getCartTotal()
+  };
+
+  dailyOrders.push(entry);
+
+  orders = [];
+  orderPrices = [];
+
   updateCart();
 }
 
@@ -238,7 +282,6 @@ function removeExtraParfums(){
 
 function selectParfumCrepe(el,name){
 
-  // reset visuel
   var cards = document.querySelectorAll("#extraParfum .card");
   for(var i=0;i<cards.length;i++){
     cards[i].classList.remove("selected");
@@ -246,12 +289,10 @@ function selectParfumCrepe(el,name){
 
   el.classList.add("selected");
 
-  // retirer anciens parfums
   var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
 
   currentOrder = currentOrder.filter(item => !parfums.includes(item));
 
-  // ajouter nouveau parfum
   currentOrder.push(name);
 
   updateCart();
@@ -380,6 +421,42 @@ function selectChantilly(el, choix, prix){
   updateTotal();
   updateCart();
 }
+
+/* ================= BILAN ================= */
+
+function renderBilan(){
+
+  var html = "";
+
+  dailyOrders.forEach((order, index)=>{
+
+    html += "<div class='bilan-card'>";
+    html += "<b>Commande #" + (index+1) + "</b><br>";
+    html += order.date + " - " + order.time + "<br><br>";
+
+    order.items.forEach((item,i)=>{
+      html += "• " + item.join(", ");
+      html += " — " + order.prices[i].toFixed(2) + "€<br>";
+    });
+
+    html += "<br><b>Total : " + order.total.toFixed(2) + "€</b>";
+    html += "</div>";
+  });
+
+  document.getElementById("bilan").innerHTML = html;
+}
+
+/* ================= FIN JOURNEE ================= */
+
+function endDay(){
+
+  if(!confirm("Effacer le bilan ?")) return;
+
+  dailyOrders = [];
+  renderBilan();
+}
+
+/* ================= SERVICE WORKER ================= */
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
