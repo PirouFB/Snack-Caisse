@@ -1,5 +1,8 @@
-// ================= VARIABLES =================
+/* ================= VARIABLES ================= */
+
 var total = 0;
+var basePrice = 0;
+
 var currentOrder = [];
 var orders = [];
 var orderPrices = [];
@@ -8,7 +11,8 @@ var dailyOrders = [];
 var bouleMax = 0;
 var bouleCount = 0;
 
-// ================= TOTAL =================
+/* ================= TOTAL ================= */
+
 function updateTotal(){
   document.getElementById("total").innerHTML = total.toFixed(2) + "€";
 }
@@ -17,7 +21,8 @@ function getCartTotal(){
   return orderPrices.reduce((a,b)=>a+b,0);
 }
 
-// ================= MENU =================
+/* ================= MENU ================= */
+
 function toggleMenu(){
   document.getElementById("menu").classList.toggle("hidden");
 }
@@ -35,90 +40,424 @@ function showBilan(){
   renderBilan();
 }
 
-// ================= CART =================
+/* ================= CART ================= */
+
 function updateCart(){
+
   var html = "";
 
-  orders.forEach((o,i)=>{
-    html += `❌ #${i+1} : ${o.join(", ")} — <b>${orderPrices[i]}€</b><br>`;
-  });
+  for(var i=0;i<orders.length;i++){
+    html += '<div onclick="removeOrder('+i+')" style="cursor:pointer;margin:5px;padding:6px;background:#ffe3e6;border-radius:8px;font-size:14px;">';
+    html += '❌ #' + (i+1) + ' : ' + orders[i].join(", ");
+    html += '<b> — ' + orderPrices[i].toFixed(2) + '€</b></div>';
+  }
 
-  html += `<b>Total panier : ${getCartTotal()}€</b>`;
+  html += '<div style="margin-top:10px;font-weight:bold;font-size:16px;">';
+  html += 'Total panier : ' + getCartTotal().toFixed(2) + '€</div>';
+
   document.getElementById("cart").innerHTML = html;
 }
 
-// ================= RESET =================
+/* ================= RESET ================= */
+
 function resetAll(){
+
   total = 0;
+  basePrice = 0;
+
   currentOrder = [];
   orders = [];
   orderPrices = [];
+
+  bouleMax = 0;
+  bouleCount = 0;
+
   document.getElementById("dynamic").innerHTML = "";
+
+  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
+
   updateTotal();
   updateCart();
 }
 
-// ================= ADD =================
+/* ================= ADD CART ================= */
+
 function addToCart(){
+
   if(currentOrder.length === 0) return;
-  orders.push([...currentOrder]);
+
+  if(currentOrder.includes("Pot") || currentOrder.includes("Cornet")){
+    var hasChantilly = currentOrder.includes("Chantilly Oui") || currentOrder.includes("Chantilly Non");
+    if(!hasChantilly){
+      alert("Choisissez la crème fouettée !");
+      return;
+    }
+  }
+
+  orders.push(currentOrder.slice());
   orderPrices.push(total);
+
   currentOrder = [];
   total = 0;
+  basePrice = 0;
+  bouleMax = 0;
+  bouleCount = 0;
+
+  document.getElementById("dynamic").innerHTML = "";
+
+  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
+
   updateTotal();
   updateCart();
 }
 
-// ================= VALIDER =================
+/* ================= VALIDER ================= */
+
 function validateCart(){
+
   if(orders.length === 0) return;
 
+  var now = new Date();
+
   dailyOrders.push({
-    date:new Date().toLocaleString(),
-    items:[...orders],
-    prices:[...orderPrices],
-    total:getCartTotal()
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    items: JSON.parse(JSON.stringify(orders)),
+    prices: [...orderPrices],
+    total: getCartTotal()
   });
 
   orders = [];
   orderPrices = [];
+
   updateCart();
 }
 
-// ================= MAIN =================
-function selectMain(name, price){
-  total = price;
-  currentOrder = [name];
-  updateTotal();
+/* ================= REMOVE ================= */
 
-  if(name==="Boissons") showBoissons();
-  else if(name==="Gateau") showGateau();
-  else if(name==="Sale") showSale();
+function removeOrder(index){
+  orders.splice(index,1);
+  orderPrices.splice(index,1);
+  updateCart();
 }
 
-// ================= SIMPLE =================
-function buildSimple(list){
-  var html = "<div class='row'>";
-  list.forEach(i=>{
-    html+=`<div class="card" onclick="selectSimple('${i[1]}',${i[2]})">
-    <img src="${i[0]}"><p>${i[1]}<br>${i[2]}€</p></div>`;
-  });
-  html+="</div>";
+/* ================= MAIN ================= */
+
+function selectMain(name, price, el){
+
+  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  basePrice = price;
+  total = price;
+  currentOrder = [name];
+
+  updateTotal();
+  updateCart();
+
+  if(name === "Glace") showGlaceStep1();
+  else if(name === "Boissons") showBoissons();
+  else if(name === "Gateau") showGateau();
+  else if(name === "Sale") showSale();
+  else showCrepePanini(); // 🔥 garde ton système intact
+}
+
+/* ================= CREPES ================= */
+
+function showCrepePanini(){
+
+  var html = "";
+  html += "<h3>Nappage</h3><div class='row'>" + build(nappage) + "</div>";
+  html += "<h3>Topping</h3><div class='row'>" + build(topping) + "</div>";
+  html += "<h3>Options</h3><div class='row'>" + build(options) + "</div>";
+
+  document.getElementById("dynamic").innerHTML = html;
+}
+
+/* ================= DATA ================= */
+
+var nappage = [
+["icon-nappage-nutella.png","Nutella"],
+["icon-nappage-sucre.png","Sucre"],
+["icon-nappage-chocolat.png","Chocolat"],
+["icon-nappage-creme-de-marron.png","Crème de Marrons"],
+["icon-nappage-fraise.png","Fraise"],
+["icon-nappage-caramel.png","Caramel"]
+];
+
+var topping = [
+["icon-topping-kinder-bueno.png","Kinder Bueno"],
+["icon-topping-oreo.png","Oreo"],
+["icon-topping-sprinkles.png","Sprinkles"],
+["icon-topping-chantilly.png","Chantilly"],
+["icon-topping-coco-rape.png","Coco Rapée"],
+["icon-topping-speculos.png","Speculos"]
+];
+
+var options = [
+["icon-options-boule-de-glace.png","Boule glace"],
+["icon-options-banane.png","Banane"],
+["icon-options-fraise.png","Fraise"],
+["icon-options-myrtille.png","Myrtille"],
+["icon-options-framboise.png","Framboise"],
+["icon-options-pistache-concassees.png","Pistache Concassées"]
+];
+
+/* ================= BUILD ================= */
+
+function build(list){
+
+  var html = "";
+
+  for(var i=0;i<list.length;i++){
+    html += "<div class='card' onclick=\"toggle(this,'" + list[i][1] + "')\">";
+    html += "<img src='" + list[i][0] + "'>";
+    html += "<p>" + list[i][1] + "</p></div>";
+  }
+
   return html;
 }
 
-function selectSimple(name,price){
+/* ================= TOGGLE ================= */
+
+function toggle(el,name){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    total -= 1;
+
+    currentOrder = currentOrder.filter(item => item !== name);
+
+    if(name === "Boule glace") removeExtraParfums();
+
+  } else {
+
+    el.classList.add("selected");
+    total += 1;
+    currentOrder.push(name);
+
+    if(name === "Boule glace") showExtraParfums();
+  }
+
+  updateTotal();
+  updateCart();
+}
+
+/* ================= EXTRA PARFUM CREPE ================= */
+
+function showExtraParfums(){
+
+  if(document.getElementById("extraParfum")) return;
+
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  var html = "<div id='extraParfum'><h3>Parfum</h3><div class='row'>";
+
+  list.forEach(name => {
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfumCrepe(this,'" + name + "')\">";
+    html += "<img src='" + img + "'><p>" + name + "</p></div>";
+  });
+
+  html += "</div></div>";
+
+  document.getElementById("dynamic").innerHTML += html;
+}
+
+function removeExtraParfums(){
+  var el = document.getElementById("extraParfum");
+  if(el) el.remove();
+
+  currentOrder = currentOrder.filter(item =>
+    !["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"].includes(item)
+  );
+}
+
+function selectParfumCrepe(el,name){
+
+  document.querySelectorAll("#extraParfum .card").forEach(c => c.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+
+  currentOrder = currentOrder.filter(item => !parfums.includes(item));
+
+  currentOrder.push(name);
+
+  updateCart();
+}
+/* ================= GLACE ================= */
+
+function showGlaceStep1(){
+
+  document.getElementById("dynamic").innerHTML = `
+    <div class='two'>
+      <div class='card' onclick="selectType(this,'Pot')">
+        <img src='icon-pot.png'><p>Pot</p>
+      </div>
+      <div class='card' onclick="selectType(this,'Cornet')">
+        <img src='icon-cornet.png'><p>Cornet</p>
+      </div>
+    </div>`;
+}
+
+function selectType(el,name){
+
+  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  currentOrder.push(name);
+
+  showGlaceStep2();
+}
+
+function showGlaceStep2(){
+
+  document.getElementById("dynamic").innerHTML = `
+    <div class='three'>
+      <div class='card' onclick="chooseBoules(this,1,2.5)">
+        <img src='icon-1-boule.png'><p>1 boule</p>
+      </div>
+      <div class='card' onclick="chooseBoules(this,2,4)">
+        <img src='icon-2-boules.png'><p>2 boules</p>
+      </div>
+    </div>`;
+}
+
+function chooseBoules(el,nb,price){
+
+  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
+  el.classList.add("selected");
+
+  total = price;
+  bouleMax = nb;
+  bouleCount = 0;
+
+  currentOrder.push(nb + " boules");
+
+  updateTotal();
+  updateCart();
+
+  showGlaceFinal();
+}
+
+/* ================= GLACE FINAL ================= */
+
+function showGlaceFinal(){
+
+  var html = "";
+  html += "<h3>Parfums</h3><div class='row'>" + buildParfums() + "</div>";
+  html += buildChantilly();
+
+  document.getElementById("dynamic").innerHTML = html;
+}
+
+/* ================= PARFUM GLACE ================= */
+
+function buildParfums(){
+
+  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+  var html = "";
+
+  list.forEach(name => {
+    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+
+    html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
+    html += "<img src='" + img + "'><p>" + name + "</p></div>";
+  });
+
+  return html;
+}
+
+function selectParfumGlace(el,name){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+    bouleCount--;
+  } else {
+
+    if(bouleCount >= bouleMax) return;
+
+    el.classList.add("selected");
+    bouleCount++;
+    currentOrder.push(name);
+  }
+
+  updateCart();
+}
+
+/* ================= CHANTILLY ================= */
+
+function buildChantilly(){
+
+  return `
+  <div id='chantillyBlock'>
+    <h3>Crème fouettée</h3>
+    <div class='two'>
+      <div class='card' onclick="selectChantilly(this,'Oui',1)">
+        <img src='icon-chantilly-oui.png'><p>Oui</p>
+      </div>
+      <div class='card' onclick="selectChantilly(this,'Non',0)">
+        <img src='icon-chantilly-non.png'><p>Non</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function selectChantilly(el, choix, prix){
+
+  document.querySelectorAll("#chantillyBlock .card").forEach(c => c.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  var hadOui = currentOrder.includes("Chantilly Oui");
+
+  currentOrder = currentOrder.filter(item =>
+    item !== "Chantilly Oui" && item !== "Chantilly Non"
+  );
+
+  if(hadOui) total -= 1;
+
+  total += prix;
+
+  currentOrder.push("Chantilly " + choix);
+
+  updateTotal();
+  updateCart();
+}
+
+/* ================= GLACE ================= */
+/* (inchangé — ton code original fonctionne déjà) */
+
+/* ================= NOUVEAUX MENUS ================= */
+
+function buildSimple(list){
+  var html = "<div class='row'>";
+  list.forEach(item=>{
+    html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
+    <img src="${item[0]}"><p>${item[1]}<br>${item[2]}€</p></div>`;
+  });
+  html += "</div>";
+  return html;
+}
+
+function selectSimple(name,price,el){
+  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
+  el.classList.add("selected");
+
   total = price;
   currentOrder=[name];
   updateTotal();
 }
 
-// ================= BOISSONS =================
+/* BOISSONS */
 function showBoissons(){
-  document.getElementById("dynamic").innerHTML=`
+  document.getElementById("dynamic").innerHTML = `
   <div class="two">
-    <div class="card" onclick="showBoissonsFroides()">Froides</div>
-    <div class="card" onclick="showBoissonsChaudes()">Chaudes</div>
+    <div class="card" onclick="showBoissonsFroides()">Boissons froides</div>
+    <div class="card" onclick="showBoissonsChaudes()">Boissons chaudes</div>
   </div>`;
 }
 
@@ -141,7 +480,7 @@ function showBoissonsChaudes(){
   ]);
 }
 
-// ================= GATEAU =================
+/* GATEAU */
 function showGateau(){
   document.getElementById("dynamic").innerHTML = buildSimple([
     ["icon-cookie.png","Cookie américain",2],
@@ -149,7 +488,7 @@ function showGateau(){
   ]);
 }
 
-// ================= SALE =================
+/* SALE */
 function showSale(){
   document.getElementById("dynamic").innerHTML = buildSimple([
     ["icon-panini-boeuf.png","Panini Boeuf",5],
@@ -158,23 +497,34 @@ function showSale(){
   ]);
 }
 
-// ================= BILAN =================
+/* ================= BILAN ================= */
+
 function renderBilan(){
-  var html="";
-  dailyOrders.forEach((o,i)=>{
-    html+=`<div class="bilan-card">
-    <b>Commande ${i+1}</b><br>${o.date}<br>`;
-    o.items.forEach((it,j)=>{
-      html+=`• ${it.join(", ")} — ${o.prices[j]}€<br>`;
+
+  var html = "";
+
+  dailyOrders.forEach((order, index)=>{
+
+    html += "<div class='bilan-card'>";
+    html += "<b>Commande #" + (index+1) + "</b><br>";
+    html += order.date + " - " + order.time + "<br><br>";
+
+    order.items.forEach((item,i)=>{
+      html += "• " + item.join(", ");
+      html += " — " + order.prices[i].toFixed(2) + "€<br>";
     });
-    html+=`<b>Total ${o.total}€</b></div>`;
+
+    html += "<br><b>Total : " + order.total.toFixed(2) + "€</b>";
+    html += "</div>";
   });
-  document.getElementById("bilan").innerHTML=html;
+
+  document.getElementById("bilan").innerHTML = html;
 }
 
-// ================= FIN =================
+/* ================= FIN JOURNEE ================= */
+
 function endDay(){
-  if(!confirm("Effacer ?")) return;
-  dailyOrders=[];
+  if(!confirm("Effacer le bilan ?")) return;
+  dailyOrders = [];
   renderBilan();
 }
