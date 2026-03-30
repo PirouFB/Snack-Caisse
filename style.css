@@ -36,6 +36,14 @@ body {
   margin-top: 5px;
   font-size: 14px;
 }
+
+#dynamic, .container, .footer {
+  outline: 2px solid red;
+}
+
+body {
+  overflow-x: hidden;
+}
 .card {
   cursor: pointer;
   touch-action: manipulation;
