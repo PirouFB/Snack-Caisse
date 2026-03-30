@@ -12,58 +12,34 @@ body {
   align-items: center;
 }
 
-/* FIX iPad (plus de sticky) */
 .header {
-  position: relative;
-  z-index: 10;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff8f0;
-  padding: 10px 0;
 }
 
 .header img {
-  width: 96px;
+  width: 80px;
 }
 
 #total {
-  font-size: 30px;
-  background: #fec1c3;
-  padding: 10px;
+  font-size: 28px;
+  background: #ed7985;
+  color: white;
+  padding: 10px 20px;
   border-radius: 15px;
 }
 
-/* GRID */
-.row {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  width: 100%;
-  margin: 10px 0;
-}
-
-.center {
+/* PRODUITS */
+.main-products {
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  gap: 30px;
+  gap: 40px;
+  margin: 20px 0;
 }
 
-.two {
-  display: grid;
-  grid-template-columns: repeat(2, 120px);
-  justify-content: center;
-}
-
-.three {
-  display: flex;
-  justify-content: center; /* centre horizontal */
-  align-items: center;
-  gap: 20px;
-}
-
-/* CARD */
 .card {
   text-align: center;
   cursor: pointer;
@@ -76,31 +52,83 @@ body {
   border: 4px solid transparent;
 }
 
+.big img {
+  width: 130px;
+  height: 130px;
+}
+
 .selected img {
   border: 4px solid #ed7985;
 }
 
+/* GRID OPTIONS */
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 110px);
+  justify-content: center;
+  gap: 15px;
+}
+
+/* LIGNES */
+.two, .three {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
 /* FOOTER */
 .footer {
-  margin-top: auto;
-  width: 100%;
   text-align: center;
 }
 
 button {
-  padding: 10px;
+  padding: 12px 20px;
   margin: 5px;
+  border-radius: 10px;
+  border: none;
   background: #ed7985;
   color: white;
-  border: none;
-  border-radius: 10px;
 }
 
 .reset {
   background: #68b3d0;
 }
 
-/* FIX clic iPad */
-* {
-  pointer-events: auto !important;
+.validate {
+  background: #4CAF50;
+}
+
+/* PANIER */
+#cart div {
+  background: #ffe3e6;
+  margin: 5px;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+/* MENU */
+#menuBtn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#sideMenu {
+  position: fixed;
+  top: 0;
+  left: -220px;
+  width: 200px;
+  height: 100%;
+  background: #ed7985;
+  color: white;
+  padding-top: 60px;
+  transition: 0.3s;
+}
+
+#sideMenu div {
+  padding: 15px;
+  cursor: pointer;
 }

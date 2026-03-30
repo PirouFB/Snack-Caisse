@@ -2,30 +2,26 @@
 <html lang="fr">
 <head>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ed7985">
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=768, initial-scale=1.0">
 
 <title>Caisse</title>
-
 <link rel="stylesheet" href="style.css">
-
-<!-- ✅ ICÔNE iPAD / iPHONE -->
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-<link rel="apple-touch-icon" sizes="120x120" href="icon.png">
-
-<!-- ✅ MODE APP (PLEIN ÉCRAN) -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
 </head>
 
 <body>
 
-<div class="container">
+<!-- MENU -->
+<div id="menuBtn" onclick="toggleMenu()">☰</div>
+
+<div id="sideMenu">
+  <div onclick="showPage('caisse')">💰 Caisse</div>
+  <div onclick="showPage('historique')">📦 Historique</div>
+</div>
+
+<!-- PAGE CAISSE -->
+<div class="container" id="caissePage">
 
   <div class="header">
     <img src="logo-vague.png">
@@ -33,31 +29,38 @@
     <img src="logo-manga.png">
   </div>
 
-  <div class="row center">
-    <div class="card" onclick="selectMain('Crêpes',2.5,this)">
-      <img src="icon-crepe.png">
-      <p>Crêpes</p>
+  <div class="main-products">
+    <div class="card big" onclick="selectMain('Crêpes',2.5,this)">
+      <img src="icon-crepe.png"><p>Crêpes</p>
     </div>
 
-    <div class="card" onclick="selectMain('Panini',3.5,this)">
-      <img src="icon-panini.png">
-      <p>Panini</p>
+    <div class="card big" onclick="selectMain('Panini',3.5,this)">
+      <img src="icon-panini.png"><p>Panini</p>
     </div>
 
-    <div class="card" onclick="selectMain('Glace',0,this)">
-      <img src="icon-glace.png">
-      <p>Glace</p>
+    <div class="card big" onclick="selectMain('Glace',0,this)">
+      <img src="icon-glace.png"><p>Glace</p>
     </div>
   </div>
 
   <div id="dynamic"></div>
 
   <div class="footer">
-    <button onclick="addToCart()">Ajouter</button>
-    <button class="reset" onclick="resetAll()">RESET</button>
+    <button onclick="addToCart()">🛒 Ajouter</button>
+    <button class="reset" onclick="resetAll()">Reset</button>
+
     <div id="cart"></div>
+
+    <button class="validate" onclick="validerCommande()">💳 Valider</button>
   </div>
 
+</div>
+
+<!-- HISTORIQUE -->
+<div class="container" id="historiquePage" style="display:none;">
+  <h2>📦 Historique</h2>
+  <div id="historiqueContent"></div>
+  <button onclick="resetJournee()">🔄 Fin de journée</button>
 </div>
 
 <script src="script.js"></script>
