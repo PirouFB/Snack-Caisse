@@ -12,7 +12,6 @@ body {
   align-items: center;
 }
 
-/* FIX iPad (plus de sticky) */
 .header {
   position: relative;
   z-index: 10;
@@ -24,6 +23,12 @@ body {
   padding: 10px 0;
 }
 
+.menu-btn{
+  font-size:30px;
+  padding:10px;
+  cursor:pointer;
+}
+
 .header img {
   width: 96px;
 }
@@ -33,6 +38,27 @@ body {
   background: #fec1c3;
   padding: 10px;
   border-radius: 15px;
+}
+
+/* MENU */
+.menu{
+  position:absolute;
+  top:60px;
+  left:10px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  padding:10px;
+  z-index:100;
+}
+
+.menu div{
+  padding:10px;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none;
 }
 
 /* GRID */
@@ -58,7 +84,7 @@ body {
 
 .three {
   display: flex;
-  justify-content: center; /* centre horizontal */
+  justify-content: center;
   align-items: center;
   gap: 20px;
 }
@@ -100,37 +126,20 @@ button {
   background: #68b3d0;
 }
 
-/* FIX clic iPad */
-* {
-  pointer-events: auto !important;
+/* ✅ BOUTON VALIDER */
+.validate{
+  background: #4CAF50;
+  width: 90%;
+  font-size: 18px;
+  padding: 15px;
+  margin-top: 10px;
 }
 
-.menu-btn{
-  font-size:30px;
-  padding:10px;
-  cursor:pointer;
+.validate:active{
+  transform: scale(0.97);
 }
 
-.menu{
-  position:absolute;
-  top:60px;
-  right:10px;
-  background:white;
-  border-radius:10px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.2);
-  padding:10px;
-  z-index:100;
-}
-
-.menu div{
-  padding:10px;
-  cursor:pointer;
-}
-
-.hidden{
-  display:none;
-}
-
+/* BILAN */
 #bilanView{
   width:100%;
   text-align:center;
@@ -142,4 +151,9 @@ button {
   padding:10px;
   border-radius:10px;
   text-align:left;
+}
+
+/* FIX iPad */
+* {
+  pointer-events: auto !important;
 }

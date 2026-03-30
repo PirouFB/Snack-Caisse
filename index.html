@@ -23,9 +23,7 @@
 
   <div class="header">
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
-
     <div id="total">0.00€</div>
-
     <img src="logo-manga.png">
   </div>
 
@@ -58,10 +56,15 @@
     <div id="dynamic"></div>
 
     <div class="footer">
+
       <button onclick="addToCart()">Ajouter</button>
-      <button onclick="validateCart()">Valider</button>
       <button class="reset" onclick="resetAll()">RESET</button>
+
       <div id="cart"></div>
+
+      <!-- ✅ VALIDER EN BAS -->
+      <button class="validate" onclick="validateCart()">Valider</button>
+
     </div>
 
   </div>
