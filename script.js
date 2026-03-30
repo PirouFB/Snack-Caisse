@@ -1,11 +1,12 @@
 var total = 0;
 var currentOrder = [];
+var currentMain = "";
 
 // 🛒 PANIER
 var cart = [];
 var cartPrices = [];
 
-// 📦 HISTORIQUE (NOUVEAU FORMAT)
+// 📦 HISTORIQUE
 var orders = [];
 
 var bouleMax = 0;
@@ -14,7 +15,6 @@ var bouleCount = 0;
 /* ================= LOAD ================= */
 
 window.onload = function(){
-
   var saved = localStorage.getItem("orders");
   if(saved) orders = JSON.parse(saved);
 
@@ -106,7 +106,6 @@ function validerCommande(){
   }
 
   cart.forEach((cmd,i)=>{
-
     var now = new Date();
 
     orders.push({
@@ -115,7 +114,6 @@ function validerCommande(){
       date: now.toLocaleDateString(),
       time: now.toLocaleTimeString()
     });
-
   });
 
   localStorage.setItem("orders", JSON.stringify(orders));
@@ -139,16 +137,11 @@ function updateHistorique(){
   }
 
   orders.forEach((o,i)=>{
-
     html += "<div style='margin:15px;padding:15px;background:#ffe3e6;border-radius:12px'>";
-
     html += "<b>Commande #" + (i+1) + "</b><br>";
     html += "<small>" + o.date + " - " + o.time + "</small><br><br>";
-
     html += o.items.join(", ");
-
     html += "<br><br><b>" + o.price.toFixed(2) + "€</b>";
-
     html += "</div>";
   });
 
@@ -180,6 +173,7 @@ function selectMain(name, price, el){
 
   total = price;
   currentOrder = [name];
+  currentMain = name;
 
   updateTotal();
 
@@ -250,10 +244,24 @@ function toggle(el,name){
     el.classList.remove("selected");
     total -= 1;
     currentOrder = currentOrder.filter(item => item !== name);
+
+    if(name === "Boule glace"){
+      var block = document.getElementById("parfumBlock");
+      if(block) block.remove();
+    }
+
   } else {
     el.classList.add("selected");
     total += 1;
     currentOrder.push(name);
+
+    if(name === "Boule glace"){
+      if(!document.getElementById("parfumBlock")){
+        bouleMax = 1;
+        bouleCount = 0;
+        showGlaceFinal();
+      }
+    }
   }
 
   updateTotal();
@@ -262,7 +270,6 @@ function toggle(el,name){
 /* ================= GLACE ================= */
 
 function showGlaceStep1(){
-
   document.getElementById("dynamic").innerHTML = `
     <div class='two'>
       <div class='card' onclick="selectType(this,'Pot')"><img src='icon-pot.png'><p>Pot</p></div>
@@ -276,16 +283,14 @@ function selectType(el,name){
 }
 
 function showGlaceStep2(){
-
   document.getElementById("dynamic").innerHTML = `
     <div class='two'>
-      <div class='card' onclick="chooseBoules(this,1,2.5)"><img src='icon-1-boule.png'><p>1 boule</p></div>
-      <div class='card' onclick="chooseBoules(this,2,4)"><img src='icon-2-boules.png'><p>2 boules</p></div>
+      <div class='card' onclick="chooseBoules(1,2.5)"><img src='icon-1-boule.png'><p>1 boule</p></div>
+      <div class='card' onclick="chooseBoules(2,4)"><img src='icon-2-boules.png'><p>2 boules</p></div>
     </div>`;
 }
 
-function chooseBoules(el,nb,price){
-
+function chooseBoules(nb,price){
   total = price;
   bouleMax = nb;
   bouleCount = 0;
@@ -296,9 +301,11 @@ function chooseBoules(el,nb,price){
   showGlaceFinal();
 }
 
+/* ================= PARFUMS ================= */
+
 function showGlaceFinal(){
 
-  var html = "";
+  var html = "<div id='parfumBlock'>";
   html += "<h3>Parfums</h3><div class='row'>";
 
   var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
@@ -311,19 +318,28 @@ function showGlaceFinal(){
   });
 
   html += "</div>";
-  html += buildChantilly();
 
-  document.getElementById("dynamic").innerHTML = html;
+  if(currentMain === "Glace"){
+    html += buildChantilly();
+  }
+
+  html += "</div>";
+
+  document.getElementById("dynamic").innerHTML += html;
 }
 
 function selectParfumGlace(el,name){
+
+  if(bouleMax === 1){
+    document.querySelectorAll("#parfumBlock .card").forEach(c => c.classList.remove("selected"));
+    bouleCount = 0;
+  }
 
   if(el.classList.contains("selected")){
     el.classList.remove("selected");
     bouleCount--;
     currentOrder = currentOrder.filter(item => item !== name);
   } else {
-
     if(bouleCount >= bouleMax) return;
 
     el.classList.add("selected");
@@ -335,7 +351,6 @@ function selectParfumGlace(el,name){
 /* ================= CHANTILLY ================= */
 
 function buildChantilly(){
-
   return `
   <div id='chantillyBlock'>
     <h3>Crème fouettée</h3>
@@ -363,5 +378,29 @@ function selectChantilly(el, choix, prix){
     total += prix;
   }
 
+  updateTotal();
+}
+function resetAll(){
+
+  if(!confirm("Tout réinitialiser ?")) return;
+
+  // 🔹 reset commande en cours
+  currentOrder = [];
+  total = 0;
+  currentMain = "";
+
+  // 🔹 reset visuel
+  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
+  document.getElementById("dynamic").innerHTML = "";
+
+  // 🔹 reset glace
+  bouleMax = 0;
+  bouleCount = 0;
+
+  // 🔹 reset panier (IMPORTANT 🔥)
+  cart = [];
+  cartPrices = [];
+
+  updateCartDisplay();
   updateTotal();
 }

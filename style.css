@@ -4,6 +4,7 @@ body {
   background: #fff8f0;
 }
 
+/* CONTAINER */
 .container {
   width: 768px;
   margin: auto;
@@ -12,22 +13,32 @@ body {
   align-items: center;
 }
 
+/* HEADER STICKY */
 .header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  position: sticky;
+  top: 0;
+  background: #fff8f0;
+  z-index: 1000;
+
+  padding: 10px 0;
 }
 
+/* LOGOS */
 .header img {
   width: 80px;
 }
 
+/* TOTAL CENTRÉ */
 #total {
   font-size: 28px;
   background: #ed7985;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 25px;
   border-radius: 15px;
 }
 
@@ -80,6 +91,7 @@ body {
 /* FOOTER */
 .footer {
   text-align: center;
+  margin-bottom: 30px;
 }
 
 button {
@@ -89,6 +101,7 @@ button {
   border: none;
   background: #ed7985;
   color: white;
+  cursor: pointer;
 }
 
 .reset {
@@ -114,6 +127,7 @@ button {
   left: 15px;
   font-size: 30px;
   cursor: pointer;
+  z-index: 2000;
 }
 
 #sideMenu {
@@ -126,6 +140,7 @@ button {
   color: white;
   padding-top: 60px;
   transition: 0.3s;
+  z-index: 1500;
 }
 
 #sideMenu div {
