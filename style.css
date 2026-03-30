@@ -36,6 +36,18 @@ body {
   margin-top: 5px;
   font-size: 14px;
 }
+.card {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#dynamic {
+  position: relative;
+  z-index: 1;
+}
 
 /* TOTAL */
 #total {
