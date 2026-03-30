@@ -30,109 +30,10 @@ function selectMain(name, price, el){
   updateTotal();
 
   if(name === "Glace") showGlaceStep1();
-  else if(name === "Boissons") showBoissonStep1();
   else showCrepePanini();
 }
 
-/* ================= BOISSONS ================= */
-
-function showBoissonStep1(){
-  document.getElementById("dynamic").innerHTML = `
-    <div class='two'>
-      <div class='card' onclick="selectBoissonType(this,'Boisson froide')">
-        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
-      </div>
-      <div class='card' onclick="selectBoissonType(this,'Boisson chaude')">
-        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
-      </div>
-    </div>
-  `;
-}
-
-function selectBoissonType(el, type){
-
-  currentOrder = [currentMain, type];
-
-  if(type === "Boisson froide") showBoissonsFroides();
-  else showBoissonsChaudes();
-}
-
-/* 🔥 DONNÉES */
-
-const boissonsFroides = [
-  ["icon-cocacola.png","Coca Cola",2],
-  ["icon-cocacola-zero.png","Coca Cola Zéro",2],
-  ["icon-fanta.png","Fanta",2],
-  ["icon-sprite.png","Sprite",2],
-  ["icon-icetea.png","Ice Tea",2],
-  ["icon-eau.png","Eau",1]
-];
-
-const boissonsChaudes = [
-  ["icon-cafe.png","Café",2],
-  ["icon-chocolat-chaud.png","Chocolat chaud",2],
-  ["icon-the.png","Thé",2]
-];
-
-/* 🔥 AFFICHAGE */
-
-function showBoissonsFroides(){
-  document.getElementById("dynamic").innerHTML = `
-    <div class='two'>
-      <div class='card selected' onclick="selectBoissonType(this,'Boisson froide')">
-        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
-      </div>
-      <div class='card' onclick="selectBoissonType(this,'Boisson chaude')">
-        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
-      </div>
-    </div>
-
-    <h3>Boissons froides</h3>
-    <div class='row'>${buildBoisson(boissonsFroides)}</div>
-  `;
-}
-
-function showBoissonsChaudes(){
-  document.getElementById("dynamic").innerHTML = `
-    <div class='two'>
-      <div class='card' onclick="selectBoissonType(this,'Boisson froide')">
-        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
-      </div>
-      <div class='card selected' onclick="selectBoissonType(this,'Boisson chaude')">
-        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
-      </div>
-    </div>
-
-    <h3>Boissons chaudes</h3>
-    <div class='row'>${buildBoisson(boissonsChaudes)}</div>
-  `;
-}
-
-/* 🔥 BUILD SANS PRIX AFFICHÉ */
-
-function buildBoisson(list){
-  return list.map(i=>`
-    <div class='card' onclick="selectBoisson(this,'${i[1]}', ${i[2]})">
-      <img src='${i[0]}'>
-      <p>${i[1]}</p>
-    </div>
-  `).join("");
-}
-
-/* 🔥 PRIX FONCTIONNEL */
-
-function selectBoisson(el, name, price){
-
-  document.querySelectorAll(".row .card").forEach(c=>c.classList.remove("selected"));
-  el.classList.add("selected");
-
-  currentOrder = [currentMain, currentOrder[1], name];
-
-  total = price;
-  updateTotal();
-}
-
-/* ================= CREPES / PANINI ================= */
+/* ================= CREPES ================= */
 
 function showCrepePanini(){
 
@@ -400,7 +301,7 @@ function validerCommande(){
 
   saved.push({
     date: new Date().toLocaleString(),
-    items: cart,
+    items: cart, // ✅ structure complète conservée
     total: cartTotal
   });
 
@@ -422,7 +323,7 @@ function renderBilan(){
   const data = JSON.parse(localStorage.getItem("orders") || "[]");
 
   if(data.length === 0){
-    container.innerHTML = "<p>Aucune commande</p>";
+    container.innerHTML = "<p>Aucune commande enregistrée</p>";
     return;
   }
 
@@ -443,13 +344,13 @@ function renderBilan(){
         `).join("<br>")}
 
         <br><br>
-        <strong>Total : ${order.total.toFixed(2)}€</strong>
+        <strong>Total commande : ${order.total.toFixed(2)}€</strong>
 
       </div>
     `;
   }).join("") + `
-    <div style="font-size:20px;margin-top:20px;">
-      💰 TOTAL JOURNÉE : ${totalJournee.toFixed(2)}€
+    <div style="margin-top:20px;font-size:20px;">
+      💰 TOTAL JOURNÉE : <strong>${totalJournee.toFixed(2)}€</strong>
     </div>
   `;
 }
@@ -483,3 +384,19 @@ function toggleMenu(){
   let menu = document.getElementById("sideMenu");
   menu.style.left = (menu.style.left === "0px") ? "-220px" : "0px";
 }
+
+/* ================= GLOBAL ================= */
+
+window.validerCommande = validerCommande;
+window.addToCart = addToCart;
+window.resetAll = resetAll;
+window.selectMain = selectMain;
+window.toggle = toggle;
+window.selectType = selectType;
+window.selectBoules = selectBoules;
+window.selectParfum = selectParfum;
+window.selectChantilly = selectChantilly;
+window.showPage = showPage;
+window.toggleMenu = toggleMenu;
+window.renderBilan = renderBilan;
+window.resetJournee = resetJournee;
