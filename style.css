@@ -4,7 +4,6 @@ body {
   background: #fff8f0;
 }
 
-/* CONTAINER */
 .container {
   width: 768px;
   margin: auto;
@@ -24,16 +23,14 @@ body {
   top: 0;
   background: #fff8f0;
   z-index: 1000;
-
   padding: 10px 0;
 }
 
-/* LOGOS */
 .header img {
   width: 80px;
 }
 
-/* TOTAL CENTRÉ */
+/* TOTAL */
 #total {
   font-size: 28px;
   background: #ed7985;
@@ -42,11 +39,20 @@ body {
   border-radius: 15px;
 }
 
+/* ANIMATION */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+#total.animate {
+  animation: pulse 0.3s;
+}
+
 /* PRODUITS */
 .main-products {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   gap: 40px;
   margin: 20px 0;
 }
@@ -72,20 +78,22 @@ body {
   border: 4px solid #ed7985;
 }
 
-/* GRID OPTIONS */
 .row {
   display: grid;
   grid-template-columns: repeat(6, 110px);
-  justify-content: center;
   gap: 15px;
 }
 
-/* LIGNES */
-.two, .three {
+.two {
   display: flex;
-  justify-content: center;
   gap: 40px;
   margin: 20px 0;
+  justify-content: center; /* 🔥 CENTRAGE OUI/NON */
+}
+
+/* 🔥 CENTRAGE TITRES PARFUM + CHANTILLY */
+#parfumBlock {
+  text-align: center;
 }
 
 /* FOOTER */
@@ -104,20 +112,20 @@ button {
   cursor: pointer;
 }
 
-.reset {
-  background: #68b3d0;
-}
+.reset { background: #68b3d0; }
+.validate { background: #4CAF50; }
 
-.validate {
-  background: #4CAF50;
-}
-
-/* PANIER */
 #cart div {
   background: #ffe3e6;
   margin: 5px;
   padding: 8px;
   border-radius: 8px;
+}
+
+#cartTotal {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 /* MENU */
@@ -132,7 +140,6 @@ button {
 
 #sideMenu {
   position: fixed;
-  top: 0;
   left: -220px;
   width: 200px;
   height: 100%;
@@ -140,7 +147,6 @@ button {
   color: white;
   padding-top: 60px;
   transition: 0.3s;
-  z-index: 1500;
 }
 
 #sideMenu div {

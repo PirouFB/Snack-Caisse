@@ -1,179 +1,31 @@
-var total = 0;
-var currentOrder = [];
-var currentMain = "";
+/* ================= VARIABLES ================= */
 
-// 🛒 PANIER
-var cart = [];
-var cartPrices = [];
+let total = 0;
+let currentOrder = [];
+let currentMain = "";
 
-// 📦 HISTORIQUE
-var orders = [];
+let cart = [];
+let cartTotal = 0;
 
-var bouleMax = 0;
-var bouleCount = 0;
-
-/* ================= LOAD ================= */
-
-window.onload = function(){
-  var saved = localStorage.getItem("orders");
-  if(saved) orders = JSON.parse(saved);
-
-  updateCartDisplay();
-};
-
-/* ================= MENU ================= */
-
-function toggleMenu(){
-  var menu = document.getElementById("sideMenu");
-  menu.style.left = (menu.style.left === "0px") ? "-250px" : "0px";
-}
-
-function showPage(page){
-
-  document.getElementById("sideMenu").style.left = "-250px";
-
-  var caisse = document.getElementById("caissePage");
-  var historique = document.getElementById("historiquePage");
-
-  if(page === "caisse"){
-    caisse.style.display = "flex";
-    historique.style.display = "none";
-  }
-
-  if(page === "historique"){
-    caisse.style.display = "none";
-    historique.style.display = "flex";
-    updateHistorique();
-  }
-}
+let bouleMax = 1;
+let bouleCount = 0;
 
 /* ================= TOTAL ================= */
 
 function updateTotal(){
-  document.getElementById("total").innerHTML = total.toFixed(2) + "€";
-}
-
-/* ================= PANIER ================= */
-
-function updateCartDisplay(){
-
-  var html = "<b>🛒 Panier</b>";
-
-  cart.forEach((cmd,i)=>{
-    html += "<div onclick='removeFromCart("+i+")' style='cursor:pointer;margin:5px;padding:6px;background:#ffe3e6;border-radius:8px;'>";
-    html += "❌ #" + (i+1) + " : " + cmd.join(", ") + " — " + cartPrices[i].toFixed(2) + "€";
-    html += "</div>";
-  });
-
-  document.getElementById("cart").innerHTML = html;
-}
-
-function removeFromCart(index){
-  if(!confirm("Supprimer ?")) return;
-
-  cart.splice(index,1);
-  cartPrices.splice(index,1);
-
-  updateCartDisplay();
-}
-
-/* ================= AJOUT PANIER ================= */
-
-function addToCart(){
-
-  if(currentOrder.length === 0) return;
-
-  cart.push(currentOrder.slice());
-  cartPrices.push(total);
-
-  currentOrder = [];
-  total = 0;
-
-  document.getElementById("dynamic").innerHTML = "";
-  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
-
-  updateTotal();
-  updateCartDisplay();
-}
-
-/* ================= VALIDATION ================= */
-
-function validerCommande(){
-
-  if(cart.length === 0){
-    alert("Panier vide !");
-    return;
-  }
-
-  cart.forEach((cmd,i)=>{
-    var now = new Date();
-
-    orders.push({
-      items: cmd,
-      price: cartPrices[i],
-      date: now.toLocaleDateString(),
-      time: now.toLocaleTimeString()
-    });
-  });
-
-  localStorage.setItem("orders", JSON.stringify(orders));
-
-  cart = [];
-  cartPrices = [];
-
-  updateCartDisplay();
-
-  alert("Commande validée ✅");
-}
-
-/* ================= HISTORIQUE ================= */
-
-function updateHistorique(){
-
-  var html = "";
-
-  if(orders.length === 0){
-    html = "<p>Aucune commande</p>";
-  }
-
-  orders.forEach((o,i)=>{
-    html += "<div style='margin:15px;padding:15px;background:#ffe3e6;border-radius:12px'>";
-    html += "<b>Commande #" + (i+1) + "</b><br>";
-    html += "<small>" + o.date + " - " + o.time + "</small><br><br>";
-    html += o.items.join(", ");
-    html += "<br><br><b>" + o.price.toFixed(2) + "€</b>";
-    html += "</div>";
-  });
-
-  var totalJour = orders.reduce((sum,o)=>sum+o.price,0);
-
-  html += "<hr><h3>Total : " + totalJour.toFixed(2) + "€</h3>";
-
-  document.getElementById("historiqueContent").innerHTML = html;
-}
-
-/* ================= RESET ================= */
-
-function resetJournee(){
-  if(!confirm("Remettre à zéro ?")) return;
-
-  localStorage.clear();
-  orders = [];
-
-  updateHistorique();
+  document.getElementById("total").innerText = total.toFixed(2) + "€";
 }
 
 /* ================= MAIN ================= */
 
 function selectMain(name, price, el){
 
-  document.querySelectorAll(".selected").forEach(e => e.classList.remove("selected"));
-
+  document.querySelectorAll(".big").forEach(e=>e.classList.remove("selected"));
   el.classList.add("selected");
 
-  total = price;
-  currentOrder = [name];
   currentMain = name;
+  currentOrder = [name];
+  total = price;
 
   updateTotal();
 
@@ -185,7 +37,7 @@ function selectMain(name, price, el){
 
 function showCrepePanini(){
 
-  var html = "";
+  let html = "";
   html += "<h3>Nappage</h3><div class='row'>" + build(nappage) + "</div>";
   html += "<h3>Topping</h3><div class='row'>" + build(topping) + "</div>";
   html += "<h3>Options</h3><div class='row'>" + build(options) + "</div>";
@@ -195,7 +47,7 @@ function showCrepePanini(){
 
 /* ================= DATA ================= */
 
-var nappage = [
+const nappage = [
 ["icon-nappage-nutella.png","Nutella"],
 ["icon-nappage-sucre.png","Sucre"],
 ["icon-nappage-chocolat.png","Chocolat"],
@@ -204,7 +56,7 @@ var nappage = [
 ["icon-nappage-caramel.png","Caramel"]
 ];
 
-var topping = [
+const topping = [
 ["icon-topping-kinder-bueno.png","Kinder Bueno"],
 ["icon-topping-oreo.png","Oreo"],
 ["icon-topping-sprinkles.png","Sprinkles"],
@@ -213,7 +65,7 @@ var topping = [
 ["icon-topping-speculos.png","Speculos"]
 ];
 
-var options = [
+const options = [
 ["icon-options-boule-de-glace.png","Boule glace"],
 ["icon-options-banane.png","Banane"],
 ["icon-options-fraise.png","Fraise"],
@@ -225,42 +77,30 @@ var options = [
 /* ================= BUILD ================= */
 
 function build(list){
-
-  var html = "";
-
-  list.forEach(item=>{
-    html += `<div class='card' onclick="toggle(this,'${item[1]}')">
-      <img src='${item[0]}'><p>${item[1]}</p></div>`;
-  });
-
-  return html;
+  return list.map(i=>`
+    <div class='card' onclick="toggle(this,'${i[1]}')">
+      <img src='${i[0]}'><p>${i[1]}</p>
+    </div>
+  `).join("");
 }
 
 /* ================= TOGGLE ================= */
 
-function toggle(el,name){
+function toggle(el, name){
 
   if(el.classList.contains("selected")){
     el.classList.remove("selected");
     total -= 1;
-    currentOrder = currentOrder.filter(item => item !== name);
-
-    if(name === "Boule glace"){
-      var block = document.getElementById("parfumBlock");
-      if(block) block.remove();
-    }
-
+    currentOrder = currentOrder.filter(i=>i!==name);
   } else {
     el.classList.add("selected");
     total += 1;
     currentOrder.push(name);
 
     if(name === "Boule glace"){
-      if(!document.getElementById("parfumBlock")){
-        bouleMax = 1;
-        bouleCount = 0;
-        showGlaceFinal();
-      }
+      bouleMax = 1;
+      bouleCount = 0;
+      showParfums(false);
     }
   }
 
@@ -272,135 +112,284 @@ function toggle(el,name){
 function showGlaceStep1(){
   document.getElementById("dynamic").innerHTML = `
     <div class='two'>
-      <div class='card' onclick="selectType(this,'Pot')"><img src='icon-pot.png'><p>Pot</p></div>
-      <div class='card' onclick="selectType(this,'Cornet')"><img src='icon-cornet.png'><p>Cornet</p></div>
-    </div>`;
+      <div class='card' onclick="selectType(this,'Pot')">
+        <img src='icon-pot.png'><p>Pot</p>
+      </div>
+      <div class='card' onclick="selectType(this,'Cornet')">
+        <img src='icon-cornet.png'><p>Cornet</p>
+      </div>
+    </div>
+  `;
 }
 
-function selectType(el,name){
+function selectType(el, name){
+  document.querySelectorAll(".two .card").forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+
   currentOrder.push(name);
   showGlaceStep2();
 }
 
 function showGlaceStep2(){
   document.getElementById("dynamic").innerHTML = `
-    <div class='two'>
-      <div class='card' onclick="chooseBoules(1,2.5)"><img src='icon-1-boule.png'><p>1 boule</p></div>
-      <div class='card' onclick="chooseBoules(2,4)"><img src='icon-2-boules.png'><p>2 boules</p></div>
-    </div>`;
+    <div id="bouleBlock" class='two'>
+      <div class='card' onclick="selectBoules(this,1,2.5)">
+        <img src='icon-1-boule.png'><p>1 boule</p>
+      </div>
+      <div class='card' onclick="selectBoules(this,2,4)">
+        <img src='icon-2-boules.png'><p>2 boules</p>
+      </div>
+    </div>
+  `;
 }
 
-function chooseBoules(nb,price){
-  total = price;
+function selectBoules(el, nb, price){
+
+  document.querySelectorAll("#bouleBlock .card").forEach(c=>c.classList.remove("selected"));
+  el.classList.add("selected");
+
   bouleMax = nb;
   bouleCount = 0;
 
-  currentOrder.push(nb + " boules");
+  total = price;
+  currentOrder = [currentMain, nb + " boule" + (nb > 1 ? "s" : "")];
 
   updateTotal();
-  showGlaceFinal();
+
+  showParfums(true);
 }
 
 /* ================= PARFUMS ================= */
 
-function showGlaceFinal(){
+const parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
 
-  var html = "<div id='parfumBlock'>";
-  html += "<h3>Parfums</h3><div class='row'>";
+function showParfums(isGlace){
 
-  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+  let html = "<div id='parfumBlock'><h3>Parfums ("+bouleCount+"/"+bouleMax+")</h3><div class='row'>";
 
-  list.forEach(name => {
-    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+  parfums.forEach(name=>{
+    let img = "icon-parfum-glace-"+name.toLowerCase().replace(/ /g,"-")+".png";
 
-    html += `<div class='card' onclick="selectParfumGlace(this,'${name}')">
-      <img src='${img}'><p>${name}</p></div>`;
+    html += `
+      <div class='card' onclick="selectParfum(this,'${name}')">
+        <img src='${img}'><p>${name}</p>
+      </div>
+    `;
   });
 
   html += "</div>";
 
-  if(currentMain === "Glace"){
-    html += buildChantilly();
+  if(isGlace){
+    html += `
+      <h3>Chantilly</h3>
+      <div class='two'>
+        <div class='card' onclick="selectChantilly(this,true)">
+          <img src='icon-chantilly-oui.png'><p>Oui</p>
+        </div>
+        <div class='card' onclick="selectChantilly(this,false)">
+          <img src='icon-chantilly-non.png'><p>Non</p>
+        </div>
+      </div>
+    `;
   }
 
   html += "</div>";
 
-  document.getElementById("dynamic").innerHTML += html;
+  document.getElementById("dynamic").insertAdjacentHTML("beforeend", html);
 }
 
-function selectParfumGlace(el,name){
-
-  if(bouleMax === 1){
-    document.querySelectorAll("#parfumBlock .card").forEach(c => c.classList.remove("selected"));
-    bouleCount = 0;
-  }
+function selectParfum(el, name){
 
   if(el.classList.contains("selected")){
     el.classList.remove("selected");
     bouleCount--;
-    currentOrder = currentOrder.filter(item => item !== name);
+    currentOrder = currentOrder.filter(i=>i!==name);
   } else {
+
     if(bouleCount >= bouleMax) return;
 
     el.classList.add("selected");
     bouleCount++;
     currentOrder.push(name);
   }
+
+  document.querySelector("#parfumBlock h3").innerText =
+    "Parfums ("+bouleCount+"/"+bouleMax+")";
 }
 
-/* ================= CHANTILLY ================= */
+function selectChantilly(el, value){
 
-function buildChantilly(){
-  return `
-  <div id='chantillyBlock'>
-    <h3>Crème fouettée</h3>
-    <div class='two'>
-      <div class='card' onclick="selectChantilly(this,'Oui',1)">
-        <img src='icon-chantilly-oui.png'><p>Oui</p>
-      </div>
-      <div class='card' onclick="selectChantilly(this,'Non',0)">
-        <img src='icon-chantilly-non.png'><p>Non</p>
-      </div>
-    </div>
-  </div>`;
-}
-
-function selectChantilly(el, choix, prix){
-
-  document.querySelectorAll("#chantillyBlock .card").forEach(c => c.classList.remove("selected"));
-
+  document.querySelectorAll(".two .card").forEach(c=>c.classList.remove("selected"));
   el.classList.add("selected");
 
-  currentOrder = currentOrder.filter(item => item !== "Chantilly");
+  currentOrder = currentOrder.filter(i=>i !== "Chantilly");
 
-  if(choix === "Oui"){
+  if(value){
     currentOrder.push("Chantilly");
-    total += prix;
+  }
+}
+
+/* ================= PANIER ================= */
+
+function addToCart(){
+
+  if(currentOrder.length <= 1){
+    alert("⚠️ Sélection incomplète !");
+    return;
   }
 
-  updateTotal();
+  cart.push({
+    items: [...currentOrder],
+    price: total
+  });
+
+  cartTotal += total;
+
+  renderCart();
+  resetAll();
 }
+
+function renderCart(){
+
+  let html = "";
+
+  cart.forEach((order,index)=>{
+    html += `
+      <div>
+        ${order.items.join(" + ")} = ${order.price.toFixed(2)}€
+        <button onclick="removeFromCart(${index})">❌</button>
+      </div>
+    `;
+  });
+
+  document.getElementById("cart").innerHTML = html;
+  document.getElementById("cartTotal").innerText =
+    "💰 Total panier : " + cartTotal.toFixed(2) + "€";
+}
+
+function removeFromCart(index){
+  cartTotal -= cart[index].price;
+  cart.splice(index,1);
+  renderCart();
+}
+
+/* ================= RESET ================= */
+
 function resetAll(){
-
-  if(!confirm("Tout réinitialiser ?")) return;
-
-  // 🔹 reset commande en cours
-  currentOrder = [];
   total = 0;
+  currentOrder = [];
   currentMain = "";
-
-  // 🔹 reset visuel
-  document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
-  document.getElementById("dynamic").innerHTML = "";
-
-  // 🔹 reset glace
-  bouleMax = 0;
   bouleCount = 0;
+  bouleMax = 1;
 
-  // 🔹 reset panier (IMPORTANT 🔥)
-  cart = [];
-  cartPrices = [];
+  document.getElementById("dynamic").innerHTML = "";
+  document.querySelectorAll(".selected").forEach(e=>e.classList.remove("selected"));
 
-  updateCartDisplay();
   updateTotal();
 }
+
+/* ================= VALIDATION ================= */
+
+function validerCommande(){
+
+  if(cart.length === 0){
+    alert("Panier vide !");
+    return;
+  }
+
+  const saved = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  saved.push({
+    date: new Date().toLocaleString(),
+    items: cart.map(o => o.items.join(" + ")),
+    total: cartTotal
+  });
+
+  localStorage.setItem("orders", JSON.stringify(saved));
+
+  alert("✅ Commande validée !");
+
+  cart = [];
+  cartTotal = 0;
+
+  renderCart();
+}
+
+/* ================= BILAN ================= */
+
+function renderBilan(){
+
+  const container = document.getElementById("bilanContent");
+  const data = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  if(data.length === 0){
+    container.innerHTML = "<p>Aucune commande enregistrée</p>";
+    return;
+  }
+
+  let totalJournee = 0;
+
+  container.innerHTML = data.map(order => {
+
+    totalJournee += order.total;
+
+    return `
+      <div style="background:#ffe3e6;padding:15px;margin:10px;border-radius:10px;">
+        🕒 ${order.date}<br><br>
+        ${order.items.map(i => "• " + i).join("<br>")}
+        <br><br>
+        <strong>${order.total.toFixed(2)}€</strong>
+      </div>
+    `;
+  }).join("") + `
+    <div style="margin-top:20px;font-size:20px;">
+      💰 TOTAL JOURNÉE : <strong>${totalJournee.toFixed(2)}€</strong>
+    </div>
+  `;
+}
+
+function resetJournee(){
+  if(!confirm("Supprimer le bilan ?")) return;
+  localStorage.removeItem("orders");
+  renderBilan();
+}
+
+/* ================= MENU ================= */
+
+function showPage(page){
+
+  document.getElementById("caissePage").style.display = "none";
+  document.getElementById("bilanPage").style.display = "none";
+
+  if(page === "caisse"){
+    document.getElementById("caissePage").style.display = "flex";
+  }
+
+  if(page === "bilan"){
+    document.getElementById("bilanPage").style.display = "block";
+    renderBilan();
+  }
+
+  document.getElementById("sideMenu").style.left = "-220px";
+}
+
+function toggleMenu(){
+  let menu = document.getElementById("sideMenu");
+  menu.style.left = (menu.style.left === "0px") ? "-220px" : "0px";
+}
+
+/* ================= GLOBAL ================= */
+
+window.validerCommande = validerCommande;
+window.addToCart = addToCart;
+window.resetAll = resetAll;
+window.selectMain = selectMain;
+window.toggle = toggle;
+window.selectType = selectType;
+window.selectBoules = selectBoules;
+window.selectParfum = selectParfum;
+window.selectChantilly = selectChantilly;
+window.showPage = showPage;
+window.toggleMenu = toggleMenu;
+window.renderBilan = renderBilan;
+window.resetJournee = resetJournee;
