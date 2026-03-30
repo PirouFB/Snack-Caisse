@@ -51,58 +51,84 @@ function showBoissonStep1(){
 
 function selectBoissonType(el, type){
 
-  document.querySelectorAll(".two .card").forEach(c=>c.classList.remove("selected"));
-  el.classList.add("selected");
-
   currentOrder = [currentMain, type];
 
   if(type === "Boisson froide") showBoissonsFroides();
   else showBoissonsChaudes();
 }
 
+/* 🔥 DONNÉES */
+
 const boissonsFroides = [
-["icon-coca.png","Coca"],
-["icon-ice-tea.png","Ice Tea"],
-["icon-oasis.png","Oasis"],
-["icon-eau.png","Eau"]
+  ["icon-cocacola.png","Coca Cola",2],
+  ["icon-cocacola-zero.png","Coca Cola Zéro",2],
+  ["icon-fanta.png","Fanta",2],
+  ["icon-sprite.png","Sprite",2],
+  ["icon-icetea.png","Ice Tea",2],
+  ["icon-eau.png","Eau",1]
 ];
 
 const boissonsChaudes = [
-["icon-cafe.png","Café"],
-["icon-chocolat-chaud.png","Chocolat chaud"],
-["icon-the.png","Thé"]
+  ["icon-cafe.png","Café",2],
+  ["icon-chocolat-chaud.png","Chocolat chaud",2],
+  ["icon-the.png","Thé",2]
 ];
 
+/* 🔥 AFFICHAGE */
+
 function showBoissonsFroides(){
-  document.getElementById("dynamic").innerHTML += `
+  document.getElementById("dynamic").innerHTML = `
+    <div class='two'>
+      <div class='card selected' onclick="selectBoissonType(this,'Boisson froide')">
+        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
+      </div>
+      <div class='card' onclick="selectBoissonType(this,'Boisson chaude')">
+        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
+      </div>
+    </div>
+
     <h3>Boissons froides</h3>
     <div class='row'>${buildBoisson(boissonsFroides)}</div>
   `;
 }
 
 function showBoissonsChaudes(){
-  document.getElementById("dynamic").innerHTML += `
+  document.getElementById("dynamic").innerHTML = `
+    <div class='two'>
+      <div class='card' onclick="selectBoissonType(this,'Boisson froide')">
+        <img src='icon-boisson-froide.png'><p>Boisson froide</p>
+      </div>
+      <div class='card selected' onclick="selectBoissonType(this,'Boisson chaude')">
+        <img src='icon-boisson-chaude.png'><p>Boisson chaude</p>
+      </div>
+    </div>
+
     <h3>Boissons chaudes</h3>
     <div class='row'>${buildBoisson(boissonsChaudes)}</div>
   `;
 }
 
+/* 🔥 BUILD SANS PRIX AFFICHÉ */
+
 function buildBoisson(list){
   return list.map(i=>`
-    <div class='card' onclick="selectBoisson(this,'${i[1]}')">
-      <img src='${i[0]}'><p>${i[1]}</p>
+    <div class='card' onclick="selectBoisson(this,'${i[1]}', ${i[2]})">
+      <img src='${i[0]}'>
+      <p>${i[1]}</p>
     </div>
   `).join("");
 }
 
-function selectBoisson(el, name){
+/* 🔥 PRIX FONCTIONNEL */
+
+function selectBoisson(el, name, price){
 
   document.querySelectorAll(".row .card").forEach(c=>c.classList.remove("selected"));
   el.classList.add("selected");
 
   currentOrder = [currentMain, currentOrder[1], name];
 
-  total = 2;
+  total = price;
   updateTotal();
 }
 

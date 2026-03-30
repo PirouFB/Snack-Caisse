@@ -30,6 +30,13 @@ body {
   width: 80px;
 }
 
+.card small {
+  display: block;
+  color: #555;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
 /* TOTAL */
 #total {
   font-size: 28px;
