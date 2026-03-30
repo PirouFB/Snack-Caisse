@@ -10,19 +10,30 @@
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
 
+<!-- ✅ ICÔNES APPLE -->
 <link rel="apple-touch-icon" href="icon.png">
+
+<!-- ✅ MODE APP iPAD -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#ed7985">
 
 </head>
 
 <body>
 
-<div id="menuBtn" onclick="toggleMenu()">☰</div>
+<!-- 🔥 MENU (FIX TACTILE) -->
+<div id="menuBtn">☰</div>
 
 <div id="sideMenu">
   <div onclick="showPage('caisse')">💰 Caisse</div>
   <div onclick="showPage('bilan')">📊 Bilan</div>
 </div>
+
+<!-- 🔥 OVERLAY (IMPORTANT POUR iPAD) -->
+<div id="overlay"></div>
+
+<!-- ================= CAISSE ================= -->
 
 <div class="container" id="caissePage">
 
@@ -33,19 +44,19 @@
   </div>
 
   <div class="main-products">
-    <div class="card big" onclick="selectMain('Crêpes',2.5,this)">
+    <div class="card big" data-main="Crêpes">
       <img src="icon-crepe.png"><p>Crêpes</p>
     </div>
 
-    <div class="card big" onclick="selectMain('Panini',3.5,this)">
+    <div class="card big" data-main="Panini">
       <img src="icon-panini.png"><p>Panini</p>
     </div>
 
-    <div class="card big" onclick="selectMain('Glace',0,this)">
+    <div class="card big" data-main="Glace">
       <img src="icon-glace.png"><p>Glace</p>
     </div>
 
-    <div class="card big" onclick="selectMain('Boissons',0,this)">
+    <div class="card big" data-main="Boissons">
       <img src="icon-boissons.png"><p>Boissons</p>
     </div>
   </div>
@@ -53,16 +64,18 @@
   <div id="dynamic"></div>
 
   <div class="footer">
-    <button onclick="addToCart()">🛒 Ajouter</button>
-    <button class="reset" onclick="resetAll()">Reset</button>
+    <button id="addBtn">🛒 Ajouter</button>
+    <button class="reset" id="resetBtn">Reset</button>
 
     <div id="cart"></div>
     <div id="cartTotal">💰 Total panier : 0.00€</div>
 
-    <button class="validate" onclick="validerCommande()">💳 Valider</button>
+    <button class="validate" id="validateBtn">💳 Valider</button>
   </div>
 
 </div>
+
+<!-- ================= BILAN ================= -->
 
 <div class="container" id="bilanPage" style="display:none;">
   <h2>📊 Bilan de la journée</h2>
@@ -72,11 +85,55 @@
 
 <script src="script.js"></script>
 
-<!-- 🔥 SERVICE WORKER STABLE -->
+<!-- 🔥 FIX iPAD TOUCH EVENTS -->
 <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
+document.addEventListener("DOMContentLoaded", () => {
+
+  // MENU
+  const menuBtn = document.getElementById("menuBtn");
+  const sideMenu = document.getElementById("sideMenu");
+  const overlay = document.getElementById("overlay");
+
+  menuBtn.addEventListener("touchstart", toggleMenu);
+  menuBtn.addEventListener("click", toggleMenu);
+
+  overlay.addEventListener("touchstart", closeMenu);
+  overlay.addEventListener("click", closeMenu);
+
+  function toggleMenu(){
+    sideMenu.style.left = "0px";
+    overlay.style.display = "block";
+  }
+
+  function closeMenu(){
+    sideMenu.style.left = "-220px";
+    overlay.style.display = "none";
+  }
+
+  // 🔥 FIX CARDS iPAD
+  document.addEventListener("touchstart", handleTouch, {passive:true});
+  document.addEventListener("click", handleTouch);
+
+  function handleTouch(e){
+    const card = e.target.closest(".card");
+    if(!card) return;
+
+    if(card.classList.contains("big")){
+      const name = card.dataset.main;
+
+      if(name === "Crêpes") selectMain(name,2.5,card);
+      if(name === "Panini") selectMain(name,3.5,card);
+      if(name === "Glace") selectMain(name,0,card);
+      if(name === "Boissons") selectMain(name,0,card);
+    }
+  }
+
+  // BOUTONS
+  document.getElementById("addBtn").addEventListener("click", addToCart);
+  document.getElementById("resetBtn").addEventListener("click", resetAll);
+  document.getElementById("validateBtn").addEventListener("click", validerCommande);
+
+});
 </script>
 
 </body>
