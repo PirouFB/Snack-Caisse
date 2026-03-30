@@ -2,6 +2,11 @@ body {
   margin: 0;
   font-family: Arial;
   background: #fff8f0;
+  overflow-x: hidden;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .container {
@@ -12,13 +17,17 @@ body {
   align-items: center;
 }
 
-/* HEADER STICKY */
+#dynamic {
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
 .header {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   position: sticky;
   top: 0;
   background: #fff8f0;
@@ -30,34 +39,6 @@ body {
   width: 80px;
 }
 
-.card small {
-  display: block;
-  color: #555;
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-#dynamic, .container, .footer {
-  outline: 2px solid red;
-}
-
-body {
-  overflow-x: hidden;
-}
-.card {
-  cursor: pointer;
-  touch-action: manipulation;
-}
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-#dynamic {
-  position: relative;
-  z-index: 1;
-}
-
-/* TOTAL */
 #total {
   font-size: 28px;
   background: #ed7985;
@@ -66,27 +47,11 @@ body {
   border-radius: 15px;
 }
 
-/* ANIMATION */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-#total.animate {
-  animation: pulse 0.3s;
-}
-
-/* PRODUITS */
-.main-products {
-  display: flex;
-  gap: 40px;
-  margin: 20px 0;
-}
-
+/* CARDS */
 .card {
   text-align: center;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .card img {
@@ -105,6 +70,12 @@ body {
   border: 4px solid #ed7985;
 }
 
+.main-products {
+  display: flex;
+  gap: 40px;
+  margin: 20px 0;
+}
+
 .row {
   display: grid;
   grid-template-columns: repeat(6, 110px);
@@ -115,10 +86,9 @@ body {
   display: flex;
   gap: 40px;
   margin: 20px 0;
-  justify-content: center; /* 🔥 CENTRAGE OUI/NON */
+  justify-content: center;
 }
 
-/* 🔥 CENTRAGE TITRES PARFUM + CHANTILLY */
 #parfumBlock {
   text-align: center;
 }
@@ -136,24 +106,10 @@ button {
   border: none;
   background: #ed7985;
   color: white;
-  cursor: pointer;
 }
 
 .reset { background: #68b3d0; }
 .validate { background: #4CAF50; }
-
-#cart div {
-  background: #ffe3e6;
-  margin: 5px;
-  padding: 8px;
-  border-radius: 8px;
-}
-
-#cartTotal {
-  margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
-}
 
 /* MENU */
 #menuBtn {
@@ -161,7 +117,6 @@ button {
   top: 15px;
   left: 15px;
   font-size: 30px;
-  cursor: pointer;
   z-index: 2000;
 }
 
@@ -174,6 +129,7 @@ button {
   color: white;
   padding-top: 60px;
   transition: 0.3s;
+  z-index: 1500;
 }
 
 #sideMenu div {

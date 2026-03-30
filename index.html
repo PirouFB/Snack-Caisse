@@ -8,7 +8,6 @@
 <title>La Vague Sucrée</title>
 
 <link rel="stylesheet" href="style.css">
-
 <link rel="manifest" href="manifest.json">
 
 <link rel="apple-touch-icon" href="icon.png">
@@ -34,7 +33,6 @@
   </div>
 
   <div class="main-products">
-
     <div class="card big" onclick="selectMain('Crêpes',2.5,this)">
       <img src="icon-crepe.png"><p>Crêpes</p>
     </div>
@@ -47,11 +45,9 @@
       <img src="icon-glace.png"><p>Glace</p>
     </div>
 
-    <!-- ✅ NOUVEAU -->
     <div class="card big" onclick="selectMain('Boissons',0,this)">
       <img src="icon-boissons.png"><p>Boissons</p>
     </div>
-
   </div>
 
   <div id="dynamic"></div>
@@ -76,6 +72,7 @@
 
 <script src="script.js"></script>
 
+<!-- 🔥 SERVICE WORKER STABLE -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
