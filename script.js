@@ -126,18 +126,58 @@ function validateCart(){
 
   var now = new Date();
 
+  // 🔥 On sauvegarde UNE COPIE du panier AVANT reset
+  let lastOrders = JSON.parse(JSON.stringify(orders));
+  let lastPrices = [...orderPrices];
+  let totalPanier = getCartTotal();
+
+  // ✅ Ajout au bilan
   dailyOrders.push({
     date: now.toLocaleDateString(),
     time: now.toLocaleTimeString(),
-    items: JSON.parse(JSON.stringify(orders)),
-    prices: [...orderPrices],
-    total: getCartTotal()
+    items: lastOrders,
+    prices: lastPrices,
+    total: totalPanier
   });
 
+function sendEmailFromData(ordersData, pricesData, totalPanier){
+
+  let subject = "Ticket - La Vague Sucrée";
+
+  let body = "🍦 LA VAGUE SUCRÉE 🍦\n";
+  body += "--------------------------\n\n";
+
+  ordersData.forEach((order, index)=>{
+
+    body += "Commande #" + (index+1) + "\n";
+
+    let visibleItems = order.filter(e => e !== "NoChantilly");
+
+    body += "- " + visibleItems.join(", ") + "\n";
+    body += "Prix : " + pricesData[index].toFixed(2) + "€\n\n";
+  });
+
+  body += "--------------------------\n";
+  body += "TOTAL : " + totalPanier.toFixed(2) + "€\n\n";
+  body += "Merci et à bientôt 🍦";
+
+  let email = prompt("Email du client (optionnel) :");
+
+  let mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  window.location.href = mailto;
+}
+
+  saveBilan();
+
+  // 🔥 DEMANDE EMAIL
+  if(confirm("Envoyer le ticket par mail ?")){
+    sendEmailFromData(lastOrders, lastPrices, totalPanier);
+  }
+
+  // 🔥 RESET PANIER
   orders = [];
   orderPrices = [];
-
-  saveBilan(); // ✅ AJOUT ICI
 
   updateCart();
 }
