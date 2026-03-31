@@ -536,6 +536,22 @@ function renderBilan(){
     html += "</div>";
   });
 
+let stats = getStats();
+
+html += "<div class='bilan-card'>";
+html += "<h3>📊 Statistiques</h3>";
+
+html += "Total du jour : <b>" + stats.total.toFixed(2) + "€</b><br>";
+html += "Nombre de commandes : <b>" + stats.commandes + "</b><br><br>";
+
+html += "<b>Produits vendus :</b><br>";
+
+for(let p in stats.produits){
+  html += "• " + p + " : " + stats.produits[p] + "<br>";
+}
+
+html += "</div>";
+
   document.getElementById("bilan").innerHTML = html;
 }
 
@@ -552,95 +568,168 @@ function endDay(){
 
 function exportPDF(){
 
-  if(dailyOrders.length === 0){
-    alert("Aucun bilan à exporter");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  let y = 20;
-
-  /* ================= LOGO (SAFE) ================= */
-
   try {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = "./logo-manga.png";
 
-    doc.addImage(img, "PNG", 80, 5, 50, 20);
-  } catch(e){
-    console.log("Logo non chargé");
-  }
+    if(dailyOrders.length === 0){
+      alert("Aucun bilan à exporter");
+      return;
+    }
 
-  y = 30;
+    // ✅ Sécurité chargement jsPDF
+    const jsPDFLib = window.jspdf?.jsPDF;
 
-  /* ================= TITRE ================= */
+    if(!jsPDFLib){
+      alert("Erreur : PDF non disponible");
+      return;
+    }
 
-  doc.setFontSize(18);
-  doc.text("Bilan - La Vague Sucrée", 105, y, { align: "center" });
+    const doc = new jsPDFLib();
 
-  y += 10;
+    let y = 20;
 
-  doc.line(10, y, 200, y);
-  y += 10;
+    /* ================= TITRE ================= */
 
-  doc.setFontSize(11);
+    doc.setFontSize(18);
+    doc.text("Bilan - La Vague Sucrée", 105, y, { align: "center" });
 
-  /* ================= COMMANDES ================= */
+    y += 10;
 
-  dailyOrders.forEach((order, index)=>{
+    doc.line(10, y, 200, y);
+    y += 10;
 
-    doc.setFont(undefined, "bold");
-    doc.text("Commande #" + (index+1), 10, y);
-    doc.setFont(undefined, "normal");
+    doc.setFontSize(11);
 
-    y += 5;
+    /* ================= COMMANDES ================= */
 
-    doc.text(order.date + " - " + order.time, 10, y);
-    y += 6;
+    dailyOrders.forEach((order, index)=>{
 
-    order.items.forEach((item,i)=>{
-
-      let text = "- " + item.join(", ");
-      let price = order.prices[i].toFixed(2) + "€";
-
-      doc.text(text, 10, y);
-      doc.text(price, 200, y, { align: "right" });
+      doc.setFont(undefined, "bold");
+      doc.text("Commande #" + (index+1), 10, y);
+      doc.setFont(undefined, "normal");
 
       y += 5;
 
-      if(y > 270){
+      doc.text(order.date + " - " + order.time, 10, y);
+      y += 6;
+
+      order.items.forEach((item,i)=>{
+
+        let visibleItems = item.filter(e => e !== "NoChantilly");
+
+        let text = "- " + visibleItems.join(", ");
+        let price = order.prices[i].toFixed(2) + "€";
+
+        doc.text(text, 10, y);
+        doc.text(price, 200, y, { align: "right" });
+
+        y += 5;
+
+        if(y > 270){
+          doc.addPage();
+          y = 20;
+        }
+      });
+
+      doc.setFont(undefined, "bold");
+      doc.text("Total commande : " + order.total.toFixed(2) + "€", 10, y);
+      doc.setFont(undefined, "normal");
+
+      y += 10;
+    });
+
+    /* ================= TOTAL JOUR ================= */
+
+    const totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+
+    doc.line(10, y, 200, y);
+
+    y += 10;
+
+    doc.setFontSize(14);
+    doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 105, y, { align: "center" });
+
+    /* ================= STATS ================= */
+
+    let stats = getStats();
+
+    y += 10;
+
+    if(y > 260){
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFontSize(14);
+    doc.text("STATISTIQUES", 105, y, { align: "center" });
+
+    y += 10;
+
+    doc.setFontSize(11);
+
+    doc.text("Total du jour : " + stats.total.toFixed(2) + "€", 10, y);
+    y += 6;
+
+    doc.text("Nombre de commandes : " + stats.commandes, 10, y);
+    y += 8;
+
+    doc.text("Produits vendus :", 10, y);
+    y += 6;
+
+    for(let p in stats.produits){
+
+      doc.text("- " + p + " : " + stats.produits[p], 10, y);
+      y += 5;
+
+      if(y > 280){
         doc.addPage();
         y = 20;
       }
+    }
+
+    /* ================= EXPORT SAFE ================= */
+
+    // ✅ NE PAS utiliser blob / window.open (bug iPad PWA)
+    doc.save("bilan.pdf");
+
+  } catch(e) {
+
+    console.error("Erreur export PDF :", e);
+    alert("Erreur lors de la génération du PDF");
+
+  }
+}
+
+function getStats(){
+
+  let stats = {
+    total: 0,
+    commandes: dailyOrders.length,
+    produits: {}
+  };
+
+  dailyOrders.forEach(order => {
+
+    stats.total += order.total;
+
+    order.items.forEach(item => {
+
+      item.forEach(element => {
+
+        // On ignore les éléments techniques
+        if(element === "NoChantilly") return;
+
+        if(!stats.produits[element]){
+          stats.produits[element] = 0;
+        }
+
+        stats.produits[element]++;
+      });
+
     });
 
-    doc.setFont(undefined, "bold");
-    doc.text("Total commande : " + order.total.toFixed(2) + "€", 10, y);
-    doc.setFont(undefined, "normal");
-
-    y += 10;
   });
 
-  /* ================= TOTAL JOUR ================= */
-
-  const totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
-
-  doc.line(10, y, 200, y);
-
-  y += 10;
-
-  doc.setFontSize(14);
-  doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 105, y, { align: "center" });
-
-  /* ================= OPEN ================= */
-
-  const blob = doc.output("blob");
-  const url = URL.createObjectURL(blob);
-
-  window.open(url);
+  return stats;
 }
 
 function saveBilan(){
