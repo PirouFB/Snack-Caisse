@@ -437,7 +437,7 @@ function buildSimple(list){
   var html = "<div class='center'>";
   list.forEach(item=>{
     html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
-    <img src="${item[0]}"><p>${item[1]}<br>${item[2]}€</p></div>`;
+    <img src="${item[0]}"><p>${item[1]}</p></div>`;
   });
   html += "</div>";
   return html;
