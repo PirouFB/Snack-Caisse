@@ -1,3 +1,5 @@
+alert("JS OK");
+
 /* ================= VARIABLES ================= */
 
 var total = 0;
@@ -576,8 +578,7 @@ function exportPDF(){
     }
 
     // ✅ Sécurité chargement jsPDF
-    const jsPDFLib = window.jspdf?.jsPDF;
-
+    var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
     if(!jsPDFLib){
       alert("Erreur : PDF non disponible");
       return;
