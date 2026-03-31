@@ -53,7 +53,9 @@ function updateCart(){
 
   for(var i=0;i<orders.length;i++){
     html += '<div onclick="removeOrder('+i+')" style="cursor:pointer;margin:5px;padding:6px;background:#ffe3e6;border-radius:8px;font-size:14px;">';
-    html += '❌ #' + (i+1) + ' : ' + orders[i].join(", ");
+    var visibleItems = orders[i].filter(item => item !== "NoChantilly");
+
+    html += '❌ #' + (i+1) + ' : ' + visibleItems.join(", ");
     html += '<b> — ' + orderPrices[i].toFixed(2) + '€</b></div>';
   }
 
@@ -92,7 +94,7 @@ function addToCart(){
   if(currentOrder.length === 0) return;
 
   if(currentOrder.includes("Pot") || currentOrder.includes("Cornet")){
-    var hasChantilly = currentOrder.includes("Chantilly Oui") || currentOrder.includes("Chantilly Non");
+var hasChantilly = currentOrder.includes("Chantilly") || currentOrder.includes("NoChantilly");
     if(!hasChantilly){
       alert("Choisissez la crème fouettée !");
       return;
@@ -416,20 +418,20 @@ function buildChantilly(){
 function selectChantilly(el, choix, prix){
 
   document.querySelectorAll("#chantillyBlock .card").forEach(c => c.classList.remove("selected"));
-
   el.classList.add("selected");
 
-  var hadOui = currentOrder.includes("Chantilly Oui");
-
+  // 🔥 On retire les anciennes valeurs
   currentOrder = currentOrder.filter(item =>
-    item !== "Chantilly Oui" && item !== "Chantilly Non"
+    item !== "Chantilly" && item !== "NoChantilly"
   );
 
-  if(hadOui) total -= 1;
-
-  total += prix;
-
-  currentOrder.push("Chantilly " + choix);
+  // 🔥 On ajoute un flag interne
+  if(choix === "Oui"){
+    currentOrder.push("Chantilly");
+    total += 1;
+  } else {
+    currentOrder.push("NoChantilly"); // 👈 invisible pour l'utilisateur
+  }
 
   updateTotal();
   updateCart();
@@ -558,44 +560,83 @@ function exportPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  let y = 10;
+  let y = 20;
+
+  /* ================= LOGO (SAFE) ================= */
+
+  try {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = "./logo-manga.png";
+
+    doc.addImage(img, "PNG", 80, 5, 50, 20);
+  } catch(e){
+    console.log("Logo non chargé");
+  }
+
+  y = 30;
+
+  /* ================= TITRE ================= */
 
   doc.setFontSize(18);
-  doc.text("Bilan - La Vague Sucrée", 10, y);
+  doc.text("Bilan - La Vague Sucrée", 105, y, { align: "center" });
+
   y += 10;
 
-  doc.setFontSize(12);
+  doc.line(10, y, 200, y);
+  y += 10;
+
+  doc.setFontSize(11);
+
+  /* ================= COMMANDES ================= */
 
   dailyOrders.forEach((order, index)=>{
 
+    doc.setFont(undefined, "bold");
     doc.text("Commande #" + (index+1), 10, y);
-    y += 6;
+    doc.setFont(undefined, "normal");
+
+    y += 5;
 
     doc.text(order.date + " - " + order.time, 10, y);
     y += 6;
 
     order.items.forEach((item,i)=>{
-      doc.text("- " + item.join(", ") + " : " + order.prices[i].toFixed(2) + "€", 10, y);
-      y += 6;
 
-      if(y > 280){
+      let text = "- " + item.join(", ");
+      let price = order.prices[i].toFixed(2) + "€";
+
+      doc.text(text, 10, y);
+      doc.text(price, 200, y, { align: "right" });
+
+      y += 5;
+
+      if(y > 270){
         doc.addPage();
-        y = 10;
+        y = 20;
       }
     });
 
-    doc.text("Total : " + order.total.toFixed(2) + "€", 10, y);
-    y += 10;
+    doc.setFont(undefined, "bold");
+    doc.text("Total commande : " + order.total.toFixed(2) + "€", 10, y);
+    doc.setFont(undefined, "normal");
 
+    y += 10;
   });
 
-  // TOTAL GLOBAL
-  let totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+  /* ================= TOTAL JOUR ================= */
+
+  const totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+
+  doc.line(10, y, 200, y);
+
+  y += 10;
 
   doc.setFontSize(14);
-  doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 10, y);
+  doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 105, y, { align: "center" });
 
-  // 👉 OUVRE le PDF (important pour iPad)
+  /* ================= OPEN ================= */
+
   const blob = doc.output("blob");
   const url = URL.createObjectURL(blob);
 
