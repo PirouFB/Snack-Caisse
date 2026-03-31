@@ -11,6 +11,11 @@ var dailyOrders = [];
 var bouleMax = 0;
 var bouleCount = 0;
 
+var saved = localStorage.getItem("dailyOrders");
+if(saved){
+  dailyOrders = JSON.parse(saved);
+}
+
 /* ================= TOTAL ================= */
 
 function updateTotal(){
@@ -129,6 +134,8 @@ function validateCart(){
 
   orders = [];
   orderPrices = [];
+
+  saveBilan(); // ✅ AJOUT ICI
 
   updateCart();
 }
@@ -534,6 +541,13 @@ function renderBilan(){
 
 function endDay(){
   if(!confirm("Effacer le bilan ?")) return;
+
   dailyOrders = [];
+  localStorage.removeItem("dailyOrders"); // ✅ IMPORTANT
+
   renderBilan();
+}
+
+function saveBilan(){
+  localStorage.setItem("dailyOrders", JSON.stringify(dailyOrders));
 }
