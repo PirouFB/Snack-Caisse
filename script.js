@@ -706,7 +706,7 @@ var blob = doc.output("blob");
 var url = URL.createObjectURL(blob);
 
 // 🔥 iPad compatible
-window.location.href = url;
+window.open(url, "_blank");
 
   } catch(e) {
 
