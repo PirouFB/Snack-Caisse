@@ -17,7 +17,6 @@ body {
   z-index: 10;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background: #fff8f0;
   padding: 10px 0;
@@ -35,8 +34,20 @@ body {
   padding: 8px 12px;
 }
 
+.header {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* tu peux le laisser */
+  align-items: center;
+  background: #fff8f0;
+  padding: 10px 0;
+}
+
 .header img {
   width: 96px;
+  margin-left: auto;
 }
 
 #total {
