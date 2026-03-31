@@ -692,7 +692,11 @@ text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     /* ================= EXPORT SAFE ================= */
 
     // ✅ NE PAS utiliser blob / window.open (bug iPad PWA)
-    doc.save("bilan.pdf");
+var blob = doc.output("blob");
+var url = URL.createObjectURL(blob);
+
+// 🔥 iPad compatible
+window.location.href = url;
 
   } catch(e) {
 
