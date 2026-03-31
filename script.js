@@ -442,12 +442,22 @@ function selectChantilly(el, choix, prix){
 
 /* ================= NOUVEAUX MENUS ================= */
 
-function buildSimple(list){
+function buildSimple(list, multi=false){
+
   var html = "<div class='center'>";
-  list.forEach(item=>{
-    html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
-    <img src="${item[0]}"><p>${item[1]}</p></div>`;
+
+  list.forEach(item => {
+
+    if(multi){
+      html += `<div class="card" onclick="toggleSimple('${item[1]}',${item[2]},this)">
+      <img src="${item[0]}"><p>${item[1]}</p></div>`;
+    } else {
+      html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
+      <img src="${item[0]}"><p>${item[1]}</p></div>`;
+    }
+
   });
+
   html += "</div>";
   return html;
 }
@@ -487,7 +497,7 @@ function showBoissonsFroides(){
     ["icon-sprite.png","Sprite",2],
     ["icon-icetea.png","Ice Tea",2],
     ["icon-eau.png","Eau",1]
-  ]);
+  ], true); // 👈 IMPORTANT
 }
 
 function showBoissonsChaudes(){
@@ -495,7 +505,7 @@ function showBoissonsChaudes(){
     ["icon-cafe.png","Café",2],
     ["icon-the.png","Thé",2],
     ["icon-chocolat-chaud.png","Chocolat chaud",2]
-  ]);
+  ], true); // 👈 IMPORTANT
 }
 
 /* GATEAU */
@@ -503,7 +513,7 @@ function showGateau(){
   document.getElementById("dynamic").innerHTML = buildSimple([
     ["icon-cookie.png","Cookie américain",2],
     ["icon-brownies.png","Brownies",2]
-  ]);
+  ], true);
 }
 
 /* SALE */
@@ -512,7 +522,7 @@ function showSale(){
     ["icon-panini-boeuf.png","Panini Boeuf",5],
     ["icon-panini-poulet.png","Panini Poulet",5],
     ["icon-panini-vegan.png","Panini Vegan",5]
-  ]);
+  ], true);
 }
 
 /* ================= BILAN ================= */
@@ -744,6 +754,28 @@ function cleanText(text){
     .replace(/€/g, "EUR")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
+}
+
+function toggleSimple(name, price, el){
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+
+    total -= price;
+
+    // supprime UNE occurrence
+    const index = currentOrder.indexOf(name);
+    if(index > -1) currentOrder.splice(index,1);
+
+  } else {
+    el.classList.add("selected");
+
+    total += price;
+    currentOrder.push(name);
+  }
+
+  updateTotal();
+  updateCart();
 }
 
 function saveBilan(){
