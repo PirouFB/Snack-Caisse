@@ -568,8 +568,6 @@ function endDay(){
 
 function exportPDF(){
 
-alert(window.jspdf);
-
   try {
 
     if(dailyOrders.length === 0){
@@ -617,7 +615,11 @@ alert(window.jspdf);
 
         let visibleItems = item.filter(e => e !== "NoChantilly");
 
-        let text = "- " + visibleItems.join(", ");
+var text = "- " + visibleItems.join(", ");
+
+// 🔥 nettoie les caractères spéciaux
+text = text.replace(/€/g, "EUR");
+text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         let price = order.prices[i].toFixed(2) + "€";
 
         doc.text(text, 10, y);
@@ -647,7 +649,7 @@ alert(window.jspdf);
     y += 10;
 
     doc.setFontSize(14);
-    doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 105, y, { align: "center" });
+  doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + " EUR", 105, y, { align: "center" });
 
     /* ================= STATS ================= */
 
