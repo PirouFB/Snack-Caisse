@@ -735,6 +735,13 @@ function getStats(){
   return stats;
 }
 
+function cleanText(text){
+  return text
+    .replace(/€/g, "EUR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function saveBilan(){
   localStorage.setItem("dailyOrders", JSON.stringify(dailyOrders));
 }
