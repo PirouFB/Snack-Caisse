@@ -1,5 +1,3 @@
-alert("JS OK");
-
 /* ================= VARIABLES ================= */
 
 var total = 0;
@@ -569,6 +567,8 @@ function endDay(){
 }
 
 function exportPDF(){
+
+alert(window.jspdf);
 
   try {
 
