@@ -54,4 +54,8 @@ const urlsToCache = [
   "./icon-chantilly-oui.png",
   "./icon-chantilly-non.png"
 
+  // BOISSONS
+  "./icon-boisson-froide.png",
+  "./icon-boisson-chaude.png",
+
 });

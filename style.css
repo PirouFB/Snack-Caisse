@@ -24,9 +24,15 @@ body {
 }
 
 .menu-btn{
-  font-size:30px;
-  padding:10px;
-  cursor:pointer;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+
+  background: #ed7985;
+  color: white;
+  border-radius: 10px;
+  padding: 8px 12px;
 }
 
 .header img {
@@ -136,6 +142,12 @@ button {
   padding:10px;
   border-radius:10px;
   text-align:left;
+}
+
+.two .card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 }
 
 * {

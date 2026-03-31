@@ -434,7 +434,7 @@ function selectChantilly(el, choix, prix){
 /* ================= NOUVEAUX MENUS ================= */
 
 function buildSimple(list){
-  var html = "<div class='row'>";
+  var html = "<div class='center'>";
   list.forEach(item=>{
     html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
     <img src="${item[0]}"><p>${item[1]}<br>${item[2]}€</p></div>`;
@@ -456,8 +456,17 @@ function selectSimple(name,price,el){
 function showBoissons(){
   document.getElementById("dynamic").innerHTML = `
   <div class="two">
-    <div class="card" onclick="showBoissonsFroides()">Boissons froides</div>
-    <div class="card" onclick="showBoissonsChaudes()">Boissons chaudes</div>
+
+    <div class="card" onclick="showBoissonsFroides()">
+      <img src="icon-boisson-froide.png">
+      <p>Boissons froides</p>
+    </div>
+
+    <div class="card" onclick="showBoissonsChaudes()">
+      <img src="icon-boisson-chaude.png">
+      <p>Boissons chaudes</p>
+    </div>
+
   </div>`;
 }
 
