@@ -548,6 +548,60 @@ function endDay(){
   renderBilan();
 }
 
+function exportPDF(){
+
+  if(dailyOrders.length === 0){
+    alert("Aucun bilan à exporter");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  let y = 10;
+
+  doc.setFontSize(18);
+  doc.text("Bilan - La Vague Sucrée", 10, y);
+  y += 10;
+
+  doc.setFontSize(12);
+
+  dailyOrders.forEach((order, index)=>{
+
+    doc.text("Commande #" + (index+1), 10, y);
+    y += 6;
+
+    doc.text(order.date + " - " + order.time, 10, y);
+    y += 6;
+
+    order.items.forEach((item,i)=>{
+      doc.text("- " + item.join(", ") + " : " + order.prices[i].toFixed(2) + "€", 10, y);
+      y += 6;
+
+      if(y > 280){
+        doc.addPage();
+        y = 10;
+      }
+    });
+
+    doc.text("Total : " + order.total.toFixed(2) + "€", 10, y);
+    y += 10;
+
+  });
+
+  // TOTAL GLOBAL
+  let totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+
+  doc.setFontSize(14);
+  doc.text("TOTAL JOUR : " + totalJour.toFixed(2) + "€", 10, y);
+
+  // 👉 OUVRE le PDF (important pour iPad)
+  const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
+
+  window.open(url);
+}
+
 function saveBilan(){
   localStorage.setItem("dailyOrders", JSON.stringify(dailyOrders));
 }

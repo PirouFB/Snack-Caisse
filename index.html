@@ -86,11 +86,14 @@
   <div id="bilanView" class="hidden">
     <h2>📊 Bilan du jour</h2>
     <div id="bilan"></div>
-    <button onclick="endDay()">Fin de journée</button>
+  <button onclick="exportPDF()">Exporter PDF</button>
+  <button onclick="endDay()">Fin de journée</button>
   </div>
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
