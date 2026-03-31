@@ -784,28 +784,30 @@ function saveBilan(){
 
 function sendEmail(){
 
-  if(dailyOrders.length === 0){
-    alert("Aucun ticket à envoyer");
+  if(orders.length === 0){
+    alert("Panier vide");
     return;
   }
 
   let subject = "Ticket - La Vague Sucrée";
-  let body = "Merci pour votre achat !\n\n";
+  let body = "🍦 LA VAGUE SUCRÉE 🍦\n\n";
 
-  dailyOrders.forEach((order, index)=>{
+  let totalPanier = 0;
+
+  orders.forEach((order, index)=>{
 
     body += "Commande #" + (index+1) + "\n";
-    body += order.date + " - " + order.time + "\n";
 
-    order.items.forEach((item,i)=>{
-      let visibleItems = item.filter(e => e !== "NoChantilly");
-      body += "- " + visibleItems.join(", ");
-      body += " : " + order.prices[i].toFixed(2) + "€\n";
-    });
+    let visibleItems = order.filter(e => e !== "NoChantilly");
 
-    body += "Total : " + order.total.toFixed(2) + "€\n\n";
+    body += "- " + visibleItems.join(", ") + "\n";
+    body += "Prix : " + orderPrices[index].toFixed(2) + "€\n\n";
+
+    totalPanier += orderPrices[index];
   });
 
+  body += "--------------------------\n";
+  body += "TOTAL : " + totalPanier.toFixed(2) + "€\n\n";
   body += "Merci et à bientôt 🍦";
 
   let mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
