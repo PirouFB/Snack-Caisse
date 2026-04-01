@@ -759,15 +759,82 @@ text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         y = 20;
       }
     }
+// ================= PAIEMENTS =================
+
+y += 10;
+
+if(y > 260){
+  doc.addPage();
+  y = 20;
+}
+
+doc.text("Paiements :", 10, y);
+y += 6;
+
+for(let p in stats.paiements){
+
+  doc.text("- " + p + " : " + stats.paiements[p], 10, y);
+  y += 5;
+
+  if(y > 280){
+    doc.addPage();
+    y = 20;
+  }
+}
 
     /* ================= EXPORT SAFE ================= */
 
     // ✅ NE PAS utiliser blob / window.open (bug iPad PWA)
-var blob = doc.output("blob");
-var url = URL.createObjectURL(blob);
 
-// 🔥 iPad compatible
-window.open(url, "_blank");
+// 🔥 DEMANDE AVANT ACTION
+if(confirm("Envoyer le bilan par mail ?")){
+
+  let subject = "Bilan - La Vague Sucrée";
+  let body = "";
+
+  dailyOrders.forEach((order, index)=>{
+
+    body += "Commande #" + (index+1) + "\n";
+    body += order.date + " - " + order.time + "\n";
+    body += "Paiement : " + order.paiement + "\n";
+
+    order.items.forEach((item,i)=>{
+      let visibleItems = item.filter(e => e !== "NoChantilly");
+      body += "- " + visibleItems.join(", ") + " : " + order.prices[i].toFixed(2) + "€\n";
+    });
+
+    body += "Total : " + order.total.toFixed(2) + "€\n";
+    body += "--------------------------\n";
+  });
+
+  let totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+  body += "\nTOTAL JOUR : " + totalJour.toFixed(2) + "€\n";
+
+  let stats = getStats();
+
+  body += "\nSTATISTIQUES\n";
+  body += "Commandes : " + stats.commandes + "\n";
+
+  body += "\nProduits :\n";
+  for(let p in stats.produits){
+    body += "- " + p + " : " + stats.produits[p] + "\n";
+  }
+
+  body += "\nPaiements :\n";
+  for(let p in stats.paiements){
+    body += "- " + p + " : " + stats.paiements[p] + "\n";
+  }
+
+  let mailto = `mailto:piroufunbeach@icloud.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+} else {
+
+  // 👉 sinon PDF normal
+  var blob = doc.output("blob");
+  var url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+}
 
   } catch(e) {
 
