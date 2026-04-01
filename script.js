@@ -8,6 +8,7 @@ var ticketNumber = localStorage.getItem("ticketNumber") || 1;
 var orders = [];
 var orderPrices = [];
 var dailyOrders = [];
+var prepaOrders = JSON.parse(localStorage.getItem("prepaOrders")) || [];
 
 var bouleMax = 0;
 var bouleCount = 0;
@@ -36,14 +37,27 @@ function toggleMenu(){
 function showCaisse(){
   document.getElementById("caisseView").classList.remove("hidden");
   document.getElementById("bilanView").classList.add("hidden");
+  document.getElementById("prepaView").classList.add("hidden"); // ✅ AJOUT
+
   toggleMenu();
 }
 
 function showBilan(){
   document.getElementById("caisseView").classList.add("hidden");
   document.getElementById("bilanView").classList.remove("hidden");
+  document.getElementById("prepaView").classList.add("hidden"); // ✅ AJOUT
+
   toggleMenu();
   renderBilan();
+}
+
+function showPrepa(){
+  document.getElementById("caisseView").classList.add("hidden");
+  document.getElementById("bilanView").classList.add("hidden");
+  document.getElementById("prepaView").classList.remove("hidden");
+
+  toggleMenu();
+  renderPrepa();
 }
 
 /* ================= CART ================= */
@@ -896,6 +910,14 @@ function selectPayment(modePaiement){
     paiement: modePaiement
   });
 
+// ✅ AJOUT PREPA
+prepaOrders.push({
+  items: lastOrders
+});
+
+localStorage.setItem("prepaOrders", JSON.stringify(prepaOrders));
+
+
   saveBilan();
 
   // 👉 Email après paiement
@@ -934,4 +956,36 @@ function calculateTVA(totalTTC){
     ht: ht,
     tva: tva
   };
+}
+
+function renderPrepa(){
+
+  var html = "";
+
+  if(prepaOrders.length === 0){
+    html = "<p>Aucune commande en attente</p>";
+  }
+
+  prepaOrders.forEach((order, index)=>{
+
+    html += "<div class='bilan-card'>";
+    html += "<b>Commande #" + (index+1) + "</b><br><br>";
+
+    order.items.forEach(item=>{
+      let visibleItems = item.filter(e => e !== "NoChantilly");
+      html += "• " + visibleItems.join(", ") + "<br>";
+    });
+
+    html += "<br>";
+    html += "<button onclick='finishOrder("+index+")'>✅ OK</button>";
+    html += "</div>";
+  });
+
+  document.getElementById("prepa").innerHTML = html;
+}
+
+function finishOrder(index){
+  prepaOrders.splice(index,1);
+  localStorage.setItem("prepaOrders", JSON.stringify(prepaOrders));
+  renderPrepa();
 }

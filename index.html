@@ -17,16 +17,6 @@
 
 </head>
 
-<div id="paymentModal" class="hidden">
-  <div class="modal-content">
-    <h2>Mode de paiement</h2>
-
-    <button onclick="selectPayment('Espèces')">💵 Espèces</button>
-    <button onclick="selectPayment('CB')">💳 CB</button>
-    <button onclick="selectPayment('Autres')">📱 Autres</button>
-  </div>
-</div>
-
 <body>
 
 <div id="paymentModal" class="hidden">
@@ -46,10 +36,11 @@
     <img src="logo-manga.png">
   </div>
 
-  <div id="menu" class="menu hidden">
-    <div onclick="showCaisse()">🧾 CAISSE</div>
-    <div onclick="showBilan()">📊 BILAN</div>
-  </div>
+<div id="menu" class="menu hidden">
+  <div onclick="showCaisse()">🧾 CAISSE</div>
+  <div onclick="showBilan()">📊 BILAN</div>
+  <div onclick="showPrepa()">👨‍🍳 PREPA</div> <!-- ✅ AJOUT -->
+</div>
 
   <!-- CAISSE -->
   <div id="caisseView">
@@ -108,6 +99,12 @@
   <button onclick="exportPDF()">Exporter PDF</button>
   <button onclick="endDay()">Fin de journée</button>
   </div>
+
+<!-- PREPA -->
+<div id="prepaView" class="hidden">
+  <h2>👨‍🍳 Préparation</h2>
+  <div id="prepa"></div>
+</div>
 
 </div>
 
