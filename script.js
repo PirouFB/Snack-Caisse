@@ -585,7 +585,7 @@ function renderBilan(){
       paiementLabel = "Autre moyen de paiement";
     }
 
-    html += "<div class='bilan-card'>";
+    html += "<div class='bilan-card' onclick='sendTicketFromBilan("+index+")' style='cursor:pointer'>";
     html += "<b>Commande #" + (index+1) + "</b><br>";
     html += order.date + " - " + order.time + "<br>";
     html += "💳 Paiement : <b>" + paiementLabel + "</b><br><br>";
@@ -1055,4 +1055,23 @@ function finishOrder(index){
   prepaOrders.splice(index,1);
   localStorage.setItem("prepaOrders", JSON.stringify(prepaOrders));
   renderPrepa();
+}
+
+function sendTicketFromBilan(index){
+
+  let order = dailyOrders[index];
+
+  let ticketText = generateTicketText(
+    order.items,
+    order.prices,
+    order.total,
+    order.paiement,
+    index + 1
+  );
+
+  let email = prompt("Email du client :");
+
+  let mailto = `mailto:${email}?subject=${encodeURIComponent("Ticket La Vague Sucrée")}&body=${encodeURIComponent(ticketText)}`;
+
+  window.location.href = mailto;
 }
