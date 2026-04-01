@@ -4,6 +4,7 @@ var total = 0;
 var basePrice = 0;
 
 var currentOrder = [];
+var ticketNumber = localStorage.getItem("ticketNumber") || 1;
 var orders = [];
 var orderPrices = [];
 var dailyOrders = [];
@@ -124,63 +125,53 @@ function validateCart(){
 
   if(orders.length === 0) return;
 
-  var now = new Date();
+  // 👉 ouvre la fenêtre de paiement
+  document.getElementById("paymentModal").classList.remove("hidden");
+}
 
-  // 🔥 On sauvegarde UNE COPIE du panier AVANT reset
-  let lastOrders = JSON.parse(JSON.stringify(orders));
-  let lastPrices = [...orderPrices];
-  let totalPanier = getCartTotal();
+function generateTicketText(ordersData, pricesData, totalPanier, paiement, ticketNum){
 
-  // ✅ Ajout au bilan
-  dailyOrders.push({
-    date: now.toLocaleDateString(),
-    time: now.toLocaleTimeString(),
-    items: lastOrders,
-    prices: lastPrices,
-    total: totalPanier
-  });
+  let now = new Date();
 
-function sendEmailFromData(ordersData, pricesData, totalPanier){
+  let tvaData = calculateTVA(totalPanier);
 
-  let subject = "Ticket - La Vague Sucrée";
+  let text = "";
 
-  let body = "🍦 LA VAGUE SUCRÉE 🍦\n";
-  body += "--------------------------\n\n";
+  text += "🍦 LA VAGUE SUCRÉE 🍦\n";
+  text += "EURL PIROU FUN BEACH\n";
+  text += "Rue des Bergeoronettes\n";
+  text += "50770 PIROU\n";
+  text += "SIRET : 95213371800017\n";
+  text += "--------------------------\n";
+
+  text += "Ticket n° : " + ticketNum + "\n";
+  text += now.toLocaleDateString() + " " + now.toLocaleTimeString() + "\n";
+
+  text += "--------------------------\n";
 
   ordersData.forEach((order, index)=>{
 
-    body += "Commande #" + (index+1) + "\n";
-
     let visibleItems = order.filter(e => e !== "NoChantilly");
 
-    body += "- " + visibleItems.join(", ") + "\n";
-    body += "Prix : " + pricesData[index].toFixed(2) + "€\n\n";
+    text += visibleItems.join(", ") + "\n";
+    text += pricesData[index].toFixed(2) + "€\n\n";
   });
 
-  body += "--------------------------\n";
-  body += "TOTAL : " + totalPanier.toFixed(2) + "€\n\n";
-  body += "Merci et à bientôt 🍦";
+  text += "--------------------------\n";
 
-  let email = prompt("Email du client (optionnel) :");
+  text += "TOTAL TTC : " + totalPanier.toFixed(2) + "€\n";
+  text += "TVA 5.5% : " + tvaData.tva.toFixed(2) + "€\n";
+  text += "TOTAL HT : " + tvaData.ht.toFixed(2) + "€\n";
 
-  let mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  text += "--------------------------\n";
 
-  window.location.href = mailto;
+  text += "Paiement : " + paiement + "\n";
+
+  text += "Merci de votre visite 🍦";
+
+  return text;
 }
 
-  saveBilan();
-
-  // 🔥 DEMANDE EMAIL
-  if(confirm("Envoyer le ticket par mail ?")){
-    sendEmailFromData(lastOrders, lastPrices, totalPanier);
-  }
-
-  // 🔥 RESET PANIER
-  orders = [];
-  orderPrices = [];
-
-  updateCart();
-}
 
 /* ================= REMOVE ================= */
 
@@ -571,11 +562,19 @@ function renderBilan(){
 
   var html = "";
 
+  // 🔥 COMMANDES
   dailyOrders.forEach((order, index)=>{
+
+    let paiementLabel = order.paiement || "Non défini";
+
+    if(paiementLabel === "Autres"){
+      paiementLabel = "Autre moyen de paiement";
+    }
 
     html += "<div class='bilan-card'>";
     html += "<b>Commande #" + (index+1) + "</b><br>";
-    html += order.date + " - " + order.time + "<br><br>";
+    html += order.date + " - " + order.time + "<br>";
+    html += "💳 Paiement : <b>" + paiementLabel + "</b><br><br>";
 
     order.items.forEach((item,i)=>{
       html += "• " + item.join(", ");
@@ -586,24 +585,32 @@ function renderBilan(){
     html += "</div>";
   });
 
-let stats = getStats();
+  // 🔥 STATS
+  let stats = getStats();
 
-html += "<div class='bilan-card'>";
-html += "<h3>📊 Statistiques</h3>";
+  html += "<div class='bilan-card'>";
+  html += "<h3>📊 Statistiques</h3>";
 
-html += "Total du jour : <b>" + stats.total.toFixed(2) + "€</b><br>";
-html += "Nombre de commandes : <b>" + stats.commandes + "</b><br><br>";
+  html += "Total du jour : <b>" + stats.total.toFixed(2) + "€</b><br>";
+  html += "Nombre de commandes : <b>" + stats.commandes + "</b><br><br>";
 
-html += "<b>Produits vendus :</b><br>";
+  // ✅ PRODUITS
+  html += "<b>Produits vendus :</b><br>";
+  for(let p in stats.produits){
+    html += "• " + p + " : " + stats.produits[p] + "<br>";
+  }
 
-for(let p in stats.produits){
-  html += "• " + p + " : " + stats.produits[p] + "<br>";
-}
+  // ✅ PAIEMENTS
+  html += "<br><b>💳 Modes de paiement :</b><br>";
+  for(let p in stats.paiements){
+    html += "• " + p + " : " + stats.paiements[p] + "<br>";
+  }
 
-html += "</div>";
+  html += "</div>";
 
   document.getElementById("bilan").innerHTML = html;
 }
+
 
 /* ================= FIN JOURNEE ================= */
 
@@ -761,18 +768,26 @@ function getStats(){
   let stats = {
     total: 0,
     commandes: dailyOrders.length,
-    produits: {}
+    produits: {},
+    paiements: {} // 🔥 AJOUT
   };
 
   dailyOrders.forEach(order => {
 
     stats.total += order.total;
 
+    // 🔥 COMPTE PAIEMENTS
+    if(order.paiement){
+      if(!stats.paiements[order.paiement]){
+        stats.paiements[order.paiement] = 0;
+      }
+      stats.paiements[order.paiement]++;
+    }
+
     order.items.forEach(item => {
 
       item.forEach(element => {
 
-        // On ignore les éléments techniques
         if(element === "NoChantilly") return;
 
         if(!stats.produits[element]){
@@ -855,8 +870,68 @@ function sendEmail(){
   window.location.href = mailto;
 }
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js")
-    .then(() => console.log("Service Worker enregistré"))
-    .catch(err => console.log("Erreur SW :", err));
+
+function selectPayment(modePaiement){
+
+  document.getElementById("paymentModal").classList.add("hidden");
+
+  // ✅ AJOUT ICI (tout en haut)
+  let currentTicket = ticketNumber;
+  ticketNumber++;
+  localStorage.setItem("ticketNumber", ticketNumber);
+
+  var now = new Date();
+
+  let lastOrders = JSON.parse(JSON.stringify(orders));
+  let lastPrices = [...orderPrices];
+  let totalPanier = getCartTotal();
+
+  // ✅ Ajout avec paiement
+  dailyOrders.push({
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    items: lastOrders,
+    prices: lastPrices,
+    total: totalPanier,
+    paiement: modePaiement
+  });
+
+  saveBilan();
+
+  // 👉 Email après paiement
+setTimeout(()=>{
+  if(confirm("Envoyer le ticket par mail ?")){
+
+    let ticketText = generateTicketText(
+      lastOrders,
+      lastPrices,
+      totalPanier,
+      modePaiement,
+      currentTicket
+    );
+
+    let email = prompt("Email du client (optionnel) :");
+
+    let mailto = `mailto:${email}?subject=${encodeURIComponent("Ticket La Vague Sucrée")}&body=${encodeURIComponent(ticketText)}`;
+
+    window.location.href = mailto;
+  }
+}, 200);
+
+  // RESET panier
+  orders = [];
+  orderPrices = [];
+
+  updateCart();
+}
+
+function calculateTVA(totalTTC){
+  let tvaRate = 5.5 / 100;
+  let ht = totalTTC / (1 + tvaRate);
+  let tva = totalTTC - ht;
+
+  return {
+    ht: ht,
+    tva: tva
+  };
 }
