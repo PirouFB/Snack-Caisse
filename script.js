@@ -865,20 +865,25 @@ function getStats(){
       stats.paiements[order.paiement]++;
     }
 
-    order.items.forEach(item => {
+order.items.forEach(item => {
 
-      item.forEach(element => {
+  item.forEach(element => {
 
-        if(element === "NoChantilly") return;
+    // 🔥 FILTRE ICI
+    if(
+      element === "NoChantilly" ||
+      element.startsWith("Réduction") ||
+      element === "Autres"
+    ) return;
 
-        if(!stats.produits[element]){
-          stats.produits[element] = 0;
-        }
+    if(!stats.produits[element]){
+      stats.produits[element] = 0;
+    }
 
-        stats.produits[element]++;
-      });
+    stats.produits[element]++;
+  });
 
-    });
+});
 
   });
 
