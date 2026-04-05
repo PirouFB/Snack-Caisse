@@ -28,6 +28,33 @@
     <button onclick="selectPayment('Autre moyen de paiement')">📱 Autre moyen de paiement</button>  </div>
 </div>
 
+<div id="customModal" class="hidden">
+  <div class="modal-content">
+    <h2>Montant libre</h2>
+
+    <input id="customInput" type="number" step="0.01" placeholder="0.00€" style="padding:10px;font-size:18px;width:150px;text-align:center;">
+
+    <br><br>
+
+    <button onclick="addCustomAmount()">Ajouter</button>
+    <button onclick="closeCustomAmount()">Annuler</button>
+  </div>
+</div>
+
+<div id="discountModal" class="hidden">
+  <div class="modal-content">
+    <h2>Réduction (%)</h2>
+
+    <input id="discountInput" type="number" step="1" placeholder="10%"
+      style="padding:10px;font-size:18px;width:150px;text-align:center;">
+
+    <br><br>
+
+    <button onclick="applyDiscount()">Appliquer</button>
+    <button onclick="closeDiscount()">Annuler</button>
+  </div>
+</div>
+
 <div class="container">
 
   <div class="header">
@@ -84,6 +111,8 @@
     <div class="footer">
       <button onclick="addToCart()">Ajouter</button>
       <button class="reset" onclick="resetAll()">RESET</button>
+      <button class="custom-btn" onclick="openCustomAmount()">Autres</button>
+      <button class="discount-btn" onclick="openDiscount()">Réduction</button>
 
       <div id="cart"></div>
 

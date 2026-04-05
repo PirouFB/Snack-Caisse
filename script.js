@@ -1075,3 +1075,79 @@ function sendTicketFromBilan(index){
 
   window.location.href = mailto;
 }
+
+function openCustomAmount(){
+  document.getElementById("customInput").value = "";
+  document.getElementById("customModal").classList.remove("hidden");
+}
+
+function closeCustomAmount(){
+  document.getElementById("customModal").classList.add("hidden");
+}
+
+function addCustomAmount(){
+
+  let value = parseFloat(document.getElementById("customInput").value);
+
+  if(isNaN(value) || value <= 0){
+    alert("Montant invalide");
+    return;
+  }
+
+  // 🔥 Ajout direct au panier comme une commande
+  orders.push(["Autres"]);
+  orderPrices.push(value);
+
+  closeCustomAmount();
+
+  updateCart();
+}
+
+function openDiscount(){
+  document.getElementById("discountInput").value = "";
+  document.getElementById("discountModal").classList.remove("hidden");
+}
+if(visibleItems[0] === "Autres"){
+  html += '❌ #' + (i+1) + ' : Autres +' + orderPrices[i].toFixed(2) + '€';
+}
+else if(visibleItems[0] === "Réduction"){
+  html += '❌ #' + (i+1) + ' : Réduction -' + Math.abs(orderPrices[i]).toFixed(2) + '€';
+}
+else{
+  html += '❌ #' + (i+1) + ' : ' + visibleItems.join(", ");
+  html += ' — ' + orderPrices[i].toFixed(2) + '€';
+}
+
+html += '</div>';
+
+function closeDiscount(){
+  document.getElementById("discountModal").classList.add("hidden");
+}
+
+function applyDiscount(){
+
+  let percent = parseFloat(document.getElementById("discountInput").value);
+
+  if(isNaN(percent) || percent <= 0){
+    alert("Pourcentage invalide");
+    return;
+  }
+
+  let totalPanier = getCartTotal();
+
+  if(totalPanier <= 0){
+    alert("Panier vide");
+    return;
+  }
+
+  let reduction = totalPanier * (percent / 100);
+
+  // 🔥 arrondi propre
+  reduction = Math.round(reduction * 100) / 100;
+
+  orders.push(["Réduction " + percent + "%"]);
+  orderPrices.push(-reduction);
+
+  closeDiscount();
+  updateCart();
+}
