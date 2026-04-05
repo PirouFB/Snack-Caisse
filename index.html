@@ -108,18 +108,20 @@
 
     <div id="dynamic"></div>
 
-    <div class="footer">
-      <button onclick="addToCart()">Ajouter</button>
-      <button class="reset" onclick="resetAll()">RESET</button>
-      <button class="custom-btn" onclick="openCustomAmount()">Autres</button>
-      <button class="discount-btn" onclick="openDiscount()">Réduction</button>
+<div class="footer">
 
-      <div id="cart"></div>
-
-      <button class="validate" onclick="validateCart()">Valider</button>
-    </div>
-
+  <div class="action-bar">
+    <button class="btn-add" onclick="addToCart()">Ajouter</button>
+    <button class="btn-reset" onclick="resetAll()">Reset</button>
+    <button class="btn-other" onclick="openCustomAmount()">Autres</button>
+    <button class="btn-discount" onclick="openDiscount()">Réduction</button>
   </div>
+
+  <div id="cart"></div>
+
+  <button class="validate" onclick="validateCart()">Valider</button>
+
+</div>
 
   <!-- BILAN -->
   <div id="bilanView" class="hidden">
