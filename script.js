@@ -231,30 +231,30 @@ function showCrepePanini(){
 /* ================= DATA ================= */
 
 var nappage = [
-["icon-nappage-nutella.png","Nutella"],
-["icon-nappage-sucre.png","Sucre"],
-["icon-nappage-chocolat.png","Chocolat"],
-["icon-nappage-creme-de-marron.png","Crème de Marrons"],
-["icon-nappage-fraise.png","Fraise"],
-["icon-nappage-caramel.png","Caramel"]
+["icon-nappage-nutella.png","Nutella",0.5],
+["icon-nappage-sucre.png","Sucre",0],
+["icon-nappage-chocolat.png","Chocolat",0.5],
+["icon-nappage-creme-noisette-blanche.png","Crème noisette blanche",0.5],
+["icon-nappage-confiture-fraise.png","Confiture de fraise",0.5],
+["icon-nappage-fraise.png","Fraise",0.5],
+["icon-nappage-speculoos.png","Spéculoos",0.5],
+["icon-nappage-caramel.png","Caramel",0.5]
 ];
 
 var topping = [
-["icon-topping-kinder-bueno.png","Kinder Bueno"],
-["icon-topping-oreo.png","Oreo"],
-["icon-topping-sprinkles.png","Sprinkles"],
-["icon-topping-chantilly.png","Chantilly"],
-["icon-topping-coco-rape.png","Coco Rapée"],
-["icon-topping-speculos.png","Speculos"]
+["icon-topping-oreo.png","Oréo",0.5],
+["icon-topping-kinder-bueno.png","Kinder Bueno",0.5],
+["icon-topping-speculoos.png","Spéculoos",0.5],
+["icon-topping-boule-choco.png","Boule choco",0.5],
+["icon-topping-amandes.png","Amandes",0.5],
+["icon-topping-shortbread.png","Shortbread",0.5]
 ];
 
 var options = [
-["icon-options-boule-de-glace.png","Boule glace"],
-["icon-options-banane.png","Banane"],
-["icon-options-fraise.png","Fraise"],
-["icon-options-myrtille.png","Myrtille"],
-["icon-options-framboise.png","Framboise"],
-["icon-options-pistache-concassees.png","Pistache Concassées"]
+["icon-options-boule-de-glace.png","Boule glace",1],
+["icon-options-banane.png","Morceaux de bananes",1],
+["icon-options-fraise.png","Morceaux de fraises",1],
+["icon-options-chantilly.png","Crème fouettée",1]
 ];
 
 /* ================= BUILD ================= */
@@ -264,7 +264,11 @@ function build(list){
   var html = "";
 
   for(var i=0;i<list.length;i++){
-    html += "<div class='card' onclick=\"toggle(this,'" + list[i][1] + "')\">";
+
+    let prix = list[i][2] || 0;
+
+    html += "<div class='card' onclick=\"toggle(this,'" + list[i][1] + "'," + prix + ")\">";
+
     html += "<img src='" + list[i][0] + "'>";
     html += "<p>" + list[i][1] + "</p></div>";
   }
@@ -274,23 +278,31 @@ function build(list){
 
 /* ================= TOGGLE ================= */
 
-function toggle(el,name){
+function toggle(el,name,price){
 
   if(el.classList.contains("selected")){
+
     el.classList.remove("selected");
-    total -= 1;
+
+    total -= price;
 
     currentOrder = currentOrder.filter(item => item !== name);
 
-    if(name === "Boule glace") removeExtraParfums();
+    if(name.includes("Boule glace")){
+      removeExtraParfums();
+    }
 
   } else {
 
     el.classList.add("selected");
-    total += 1;
+
+    total += price;
+
     currentOrder.push(name);
 
-    if(name === "Boule glace") showExtraParfums();
+    if(name.includes("Boule glace")){
+      showExtraParfums();
+    }
   }
 
   updateTotal();
@@ -303,7 +315,19 @@ function showExtraParfums(){
 
   if(document.getElementById("extraParfum")) return;
 
-  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+ var list = [
+  "Vanille de Madagascar",
+  "Caramel",
+  "Chocolat façon brownies",
+  "Guimauve",
+  "Mangue",
+  "Fraise",
+  "Rhum raisin",
+  "Café",
+  "Pistache",
+  "Citron",
+  "Parfum du moment"
+];
 
   var html = "<div id='extraParfum'><h3>Parfum</h3><div class='row'>";
 
@@ -371,12 +395,13 @@ function showGlaceStep2(){
 
   document.getElementById("dynamic").innerHTML = `
     <div class='three'>
-      <div class='card' onclick="chooseBoules(this,1,2.5)">
-        <img src='icon-1-boule.png'><p>1 boule</p>
-      </div>
-      <div class='card' onclick="chooseBoules(this,2,4)">
-        <img src='icon-2-boules.png'><p>2 boules</p>
-      </div>
+     <div class='card' onclick="chooseBoules(this,1,3)">
+  <img src='icon-1-boule.png'><p>1 boule</p>
+</div>
+
+<div class='card' onclick="chooseBoules(this,2,5)">
+  <img src='icon-2-boules.png'><p>2 boules</p>
+</div>
     </div>`;
 }
 
@@ -412,11 +437,29 @@ function showGlaceFinal(){
 
 function buildParfums(){
 
-  var list = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+ var list = [
+  "Vanille de Madagascar",
+  "Caramel",
+  "Chocolat façon brownies",
+  "Guimauve",
+  "Mangue",
+  "Fraise",
+  "Rhum raisin",
+  "Café",
+  "Pistache",
+  "Citron",
+  "Parfum du moment"
+];
   var html = "";
 
   list.forEach(name => {
-    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+  var img = "icon-parfum-glace-" +
+  name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ /g,"-")
++ ".png";
 
     html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
     html += "<img src='" + img + "'><p>" + name + "</p></div>";
@@ -536,37 +579,44 @@ function showBoissons(){
 
 function showBoissonsFroides(){
   document.getElementById("dynamic").innerHTML = buildSimple([
-    ["icon-cocacola.png","Coca Cola",2],
-    ["icon-cocacola-zero.png","Coca Zero",2],
-    ["icon-vanta.png","Fanta",2],
-    ["icon-sprite.png","Sprite",2],
-    ["icon-icetea.png","Ice Tea",2],
+
+    ["icon-cocacola.png","Coca Cola",2.5],
+    ["icon-cocacola-zero.png","Coca Cola Zéro",2.5],
+    ["icon-oasis-tropical.png","Oasis Tropical",2.5],
+    ["icon-fanta.png","Fanta",2.5],
+    ["icon-icetea.png","Ice Tea",2.5],
+    ["icon-sprite.png","Sprite",2.5],
+    ["icon-schweppes-agrumes.png","Schweppes Agrumes",2.5],
+    ["icon-jus-ananas.png","Jus d'ananas",2.5],
+    ["icon-jus-banane.png","Jus de banane",2.5],
+    ["icon-redbull.png","Redbull",3],
     ["icon-eau.png","Eau",1]
+
   ], true); // 👈 IMPORTANT
 }
 
 function showBoissonsChaudes(){
   document.getElementById("dynamic").innerHTML = buildSimple([
-    ["icon-cafe.png","Café",2],
-    ["icon-the.png","Thé",2],
-    ["icon-chocolat-chaud.png","Chocolat chaud",2]
+    ["icon-cafe.png","Café",1.5],
+    ["icon-the.png","Thé",2.5],
+    ["icon-chocolat-chaud.png","Chocolat chaud",3]
   ], true); // 👈 IMPORTANT
 }
 
 /* GATEAU */
 function showGateau(){
   document.getElementById("dynamic").innerHTML = buildSimple([
-    ["icon-cookie.png","Cookie américain",2],
-    ["icon-brownies.png","Brownies",2]
+    ["icon-cookie.png","Cookie américain",3],
+    ["icon-brownies.png","Brownies",3]
   ], true);
 }
 
 /* SALE */
 function showSale(){
   document.getElementById("dynamic").innerHTML = buildSimple([
-    ["icon-panini-boeuf.png","Panini Boeuf",5],
-    ["icon-panini-poulet.png","Panini Poulet",5],
-    ["icon-panini-vegan.png","Panini Vegan",5]
+    ["icon-panini-boeuf.png","Beef on the Beach",4.5],
+    ["icon-panini-poulet.png","Surf Chicken",4.5],
+    ["icon-panini-vegan.png","Marin Green",4.5]
   ], true);
 }
 
