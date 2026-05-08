@@ -254,7 +254,7 @@ var options = [
 ["icon-options-boule-de-glace.png","Boule glace",1],
 ["icon-options-banane.png","Morceaux de bananes",1],
 ["icon-options-fraise.png","Morceaux de fraises",1],
-["icon-Creme-fouettee.png","Creme fouettee",1]
+["icon-creme-fouettee.png","Crème fouettée",1]
 ];
 
 /* ================= BUILD ================= */
