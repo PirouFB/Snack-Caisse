@@ -254,7 +254,7 @@ var options = [
 ["icon-options-boule-de-glace.png","Boule glace",1],
 ["icon-options-banane.png","Morceaux de bananes",1],
 ["icon-options-fraise.png","Morceaux de fraises",1],
-["icon-options-chantilly.png","Crème fouettée",1]
+["icon-options-chantilly.png","Creme fouettee",1]
 ];
 
 /* ================= BUILD ================= */
@@ -318,12 +318,12 @@ function showExtraParfums(){
  var list = [
   "Vanille de Madagascar",
   "Caramel",
-  "Chocolat façon brownies",
+  "Chocolat facon brownies",
   "Guimauve",
   "Mangue",
   "Fraise",
   "Rhum raisin",
-  "Café",
+  "Cafe",
   "Pistache",
   "Citron",
   "Parfum du moment"
