@@ -4,7 +4,6 @@ var total = 0;
 var basePrice = 0;
 
 var currentOrder = [];
-var ticketNumber = localStorage.getItem("ticketNumber") || 1;
 var orders = [];
 var orderPrices = [];
 var dailyOrders = [];
@@ -444,6 +443,11 @@ function chooseBoules(el,nb,price){
 
 function showGlaceFinal(){
 
+  currentOrder = currentOrder.filter(item =>
+    item !== "Chantilly" && item !== "NoChantilly"
+  );
+  currentOrder.push("NoChantilly");
+
   var html = "";
   html += "<h3>Parfums</h3><div class='row'>" + buildParfums() + "</div>";
   html += buildChantilly();
@@ -514,14 +518,13 @@ function buildChantilly(){
       <div class='card' onclick="selectChantilly(this,'Oui',1)">
         <img src='icon-chantilly-oui.png'><p>Oui</p>
       </div>
-      <div class='card' onclick="selectChantilly(this,'Non',0)">
-        <img src='icon-chantilly-non.png'><p>Non</p>
-      </div>
     </div>
   </div>`;
 }
 
 function selectChantilly(el, choix, prix){
+
+  var hadChantilly = currentOrder.includes("Chantilly");
 
   document.querySelectorAll("#chantillyBlock .card").forEach(c => c.classList.remove("selected"));
   el.classList.add("selected");
@@ -534,7 +537,9 @@ function selectChantilly(el, choix, prix){
   // 🔥 On ajoute un flag interne
   if(choix === "Oui"){
     currentOrder.push("Chantilly");
-    total += 1;
+    if(!hadChantilly){
+      total += prix;
+    }
   } else {
     currentOrder.push("NoChantilly"); // 👈 invisible pour l'utilisateur
   }
@@ -940,7 +945,6 @@ order.items.forEach(item => {
     // 🔥 FILTRE ICI
     if(
       element === "NoChantilly" ||
-      element.startsWith("Réduction") ||
       element === "Autres"
     ) return;
 
@@ -1029,11 +1033,6 @@ function selectPayment(modePaiement){
 
   document.getElementById("paymentModal").classList.add("hidden");
 
-  // ✅ AJOUT ICI (tout en haut)
-  let currentTicket = ticketNumber;
-  ticketNumber++;
-  localStorage.setItem("ticketNumber", ticketNumber);
-
   var now = new Date();
 
   let lastOrders = JSON.parse(JSON.stringify(orders));
@@ -1059,26 +1058,6 @@ localStorage.setItem("prepaOrders", JSON.stringify(prepaOrders));
 
 
   saveBilan();
-
-  // 👉 Email après paiement
-setTimeout(()=>{
-  if(confirm("Envoyer le ticket par mail ?")){
-
-    let ticketText = generateTicketText(
-      lastOrders,
-      lastPrices,
-      totalPanier,
-      modePaiement,
-      currentTicket
-    );
-
-    let email = prompt("Email du client (optionnel) :");
-
-    let mailto = `mailto:${email}?subject=${encodeURIComponent("Ticket La Vague Sucrée")}&body=${encodeURIComponent(ticketText)}`;
-
-    window.location.href = mailto;
-  }
-}, 200);
 
   // RESET panier
   orders = [];
@@ -1173,54 +1152,5 @@ function addCustomAmount(){
 
   closeCustomAmount();
 
-  updateCart();
-}
-
-function openDiscount(){
-  document.getElementById("discountInput").value = "";
-  document.getElementById("discountModal").classList.remove("hidden");
-}
-if(visibleItems[0] === "Autres"){
-  html += '❌ #' + (i+1) + ' : Autres +' + orderPrices[i].toFixed(2) + '€';
-}
-else if(visibleItems[0] === "Réduction"){
-  html += '❌ #' + (i+1) + ' : Réduction -' + Math.abs(orderPrices[i]).toFixed(2) + '€';
-}
-else{
-  html += '❌ #' + (i+1) + ' : ' + visibleItems.join(", ");
-  html += ' — ' + orderPrices[i].toFixed(2) + '€';
-}
-
-html += '</div>';
-
-function closeDiscount(){
-  document.getElementById("discountModal").classList.add("hidden");
-}
-
-function applyDiscount(){
-
-  let percent = parseFloat(document.getElementById("discountInput").value);
-
-  if(isNaN(percent) || percent <= 0){
-    alert("Pourcentage invalide");
-    return;
-  }
-
-  let totalPanier = getCartTotal();
-
-  if(totalPanier <= 0){
-    alert("Panier vide");
-    return;
-  }
-
-  let reduction = totalPanier * (percent / 100);
-
-  // 🔥 arrondi propre
-  reduction = Math.round(reduction * 100) / 100;
-
-  orders.push(["Réduction " + percent + "%"]);
-  orderPrices.push(-reduction);
-
-  closeDiscount();
   updateCart();
 }

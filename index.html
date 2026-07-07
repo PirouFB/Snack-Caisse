@@ -41,20 +41,6 @@
   </div>
 </div>
 
-<div id="discountModal" class="hidden">
-  <div class="modal-content">
-    <h2>Réduction (%)</h2>
-
-    <input id="discountInput" type="number" step="1" placeholder="10"
-      style="padding:10px;font-size:18px;width:150px;text-align:center;">
-
-    <br><br>
-
-    <button onclick="applyDiscount()">Appliquer</button>
-    <button onclick="closeDiscount()">Annuler</button>
-  </div>
-</div>
-
 <div class="container">
 
   <div class="header">
@@ -111,8 +97,7 @@
     <div class="footer">
       <button onclick="addToCart()">Ajouter</button>
       <button class="reset" onclick="resetAll()">RESET</button>
-      <button class="custom-btn" onclick="openCustomAmount()">Autres</button>
-      <button class="discount-btn" onclick="openDiscount()">Réduction</button>
+      <button class="custom-btn" onclick="openCustomAmount()">Autres montant</button>
 
       <div id="cart"></div>
 
