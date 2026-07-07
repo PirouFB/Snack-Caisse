@@ -1,4 +1,4 @@
-const CACHE_NAME = "caisse-cache-v11"; // 🔥 change version pour forcer update
+const CACHE_NAME = "caisse-cache-v15"; // 🔥 change version pour forcer update
 
 const urlsToCache = [
   "/",

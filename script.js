@@ -213,10 +213,29 @@ function selectMain(name, price, el){
   else if(name === "Boissons") showBoissons();
   else if(name === "Gateau") showGateau();
   else if(name === "Sale") showSale();
+  else if(name === "Panini") showPaniniGelato();
   else showCrepePanini(); // 🔥 garde ton système intact
 }
 
 /* ================= CREPES ================= */
+
+function showPaniniGelato(){
+
+  if(!currentOrder.includes("Boule glace")){
+    currentOrder.push("Boule glace");
+  }
+
+  showCrepePanini();
+  showExtraParfums();
+
+  var extraParfum = document.getElementById("extraParfum");
+  if(extraParfum){
+    document.getElementById("dynamic").prepend(extraParfum);
+  }
+
+  updateTotal();
+  updateCart();
+}
 
 function showCrepePanini(){
 
@@ -251,7 +270,6 @@ var topping = [
 ];
 
 var options = [
-["icon-options-boule-de-glace.png","Boule glace",1],
 ["icon-options-banane.png","Morceaux de bananes",1],
 ["icon-options-fraise.png","Morceaux de fraises",1],
 ["icon-creme-fouettee.png","Crème fouettée",1]
