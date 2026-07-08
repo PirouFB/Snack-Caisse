@@ -722,7 +722,7 @@ function exportPDF(){
     // ✅ Sécurité chargement jsPDF
     var jsPDFLib = window.jspdf && window.jspdf.jsPDF;
     if(!jsPDFLib){
-      alert("Erreur : PDF non disponible");
+      exportBilanHTML();
       return;
     }
 
@@ -839,6 +839,76 @@ y += 10;
 if(y > 260){
   doc.addPage();
   y = 20;
+}
+
+function escapeHTML(value){
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function buildBilanExportHTML(){
+  let stats = getStats();
+  let totalJour = dailyOrders.reduce((sum,o)=>sum+o.total,0);
+  let html = "";
+
+  html += "<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'>";
+  html += "<title>Bilan - La Vague Sucrée</title>";
+  html += "<style>";
+  html += "body{font-family:Arial,sans-serif;margin:24px;color:#222}";
+  html += "h1{text-align:center;color:#ed7985;margin-bottom:8px}";
+  html += ".meta{text-align:center;margin-bottom:24px}";
+  html += ".order{border-bottom:1px solid #ddd;padding:12px 0}";
+  html += ".row{display:flex;justify-content:space-between;gap:16px}";
+  html += ".stats{margin-top:24px;padding:16px;background:#ffe3e6;border-radius:10px}";
+  html += "button{padding:10px 14px;background:#ed7985;color:white;border:0;border-radius:8px}";
+  html += "@media print{button{display:none}body{margin:12mm}}";
+  html += "</style></head><body>";
+  html += "<button onclick='window.print()'>Imprimer / Enregistrer en PDF</button>";
+  html += "<h1>Bilan - La Vague Sucrée</h1>";
+  html += "<div class='meta'>Total jour : <b>" + totalJour.toFixed(2) + "€</b></div>";
+
+  dailyOrders.forEach((order, index)=>{
+    html += "<div class='order'>";
+    html += "<h2>Commande #" + (index+1) + "</h2>";
+    html += "<p>" + escapeHTML(order.date) + " - " + escapeHTML(order.time) + "<br>";
+    html += "Paiement : <b>" + escapeHTML(order.paiement || "Non défini") + "</b></p>";
+
+    order.items.forEach((item,i)=>{
+      let visibleItems = item.filter(e => e !== "NoChantilly");
+      html += "<div class='row'><span>" + escapeHTML(visibleItems.join(", ")) + "</span>";
+      html += "<b>" + order.prices[i].toFixed(2) + "€</b></div>";
+    });
+
+    html += "<p><b>Total commande : " + order.total.toFixed(2) + "€</b></p>";
+    html += "</div>";
+  });
+
+  html += "<div class='stats'><h2>Statistiques</h2>";
+  html += "<p>Total du jour : <b>" + stats.total.toFixed(2) + "€</b><br>";
+  html += "Nombre de commandes : <b>" + stats.commandes + "</b></p>";
+
+  html += "<h3>Produits vendus</h3>";
+  for(let p in stats.produits){
+    html += "<div class='row'><span>" + escapeHTML(p) + "</span><b>" + stats.produits[p] + "</b></div>";
+  }
+
+  html += "<h3>Paiements</h3>";
+  for(let p in stats.paiements){
+    html += "<div class='row'><span>" + escapeHTML(p) + "</span><b>" + stats.paiements[p] + "</b></div>";
+  }
+
+  html += "</div></body></html>";
+  return html;
+}
+
+function exportBilanHTML(){
+  var blob = new Blob([buildBilanExportHTML()], { type: "text/html;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
 }
 
 doc.text("Paiements :", 10, y);
@@ -1153,4 +1223,12 @@ function addCustomAmount(){
   closeCustomAmount();
 
   updateCart();
+}
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("./service-worker.js").catch(function(error){
+      console.error("Service worker non enregistré :", error);
+    });
+  });
 }
