@@ -113,6 +113,19 @@ var hasChantilly = currentOrder.includes("Chantilly") || currentOrder.includes("
       alert("Choisissez la crème fouettée !");
       return;
     }
+
+    if(bouleMax > 0 && bouleCount < bouleMax){
+      alert("Choisissez le parfum de glace !");
+      return;
+    }
+  }
+
+  if(hasBouleDeGlaceOption()){
+    var hasParfumCrepe = currentOrder.some(item => isParfumGlaceCrepe(item));
+    if(!hasParfumCrepe){
+      alert("Choisissez le parfum de glace !");
+      return;
+    }
   }
 
   orders.push(currentOrder.slice());
@@ -224,7 +237,7 @@ function showPaniniGelato(){
     currentOrder.push("Boule glace");
   }
 
-  showCrepePanini();
+  showCrepePanini(optionsGlace);
   showExtraParfums();
 
   var extraParfum = document.getElementById("extraParfum");
@@ -236,12 +249,14 @@ function showPaniniGelato(){
   updateCart();
 }
 
-function showCrepePanini(){
+function showCrepePanini(optionItems){
 
   var html = "";
+  var optionsToShow = optionItems || options;
+
   html += "<h3>Nappage</h3><div class='row'>" + build(nappage) + "</div>";
   html += "<h3>Topping</h3><div class='row'>" + build(topping) + "</div>";
-  html += "<h3>Options</h3><div class='row'>" + build(options) + "</div>";
+  html += "<h3>Options</h3><div class='row'>" + build(optionsToShow) + "</div>";
 
   document.getElementById("dynamic").innerHTML = html;
 }
@@ -275,6 +290,12 @@ var options = [
 ["icon-options-boule-de-glace.png","Boule de glace",3]
 ];
 
+var optionsGlace = [
+["icon-options-banane.png","Morceaux de bananes",1],
+["icon-options-fraise.png","Morceaux de fraises",1],
+["icon-creme-fouettee.png","Crème fouettée",1]
+];
+
 /* ================= BUILD ================= */
 
 function build(list){
@@ -294,6 +315,23 @@ function build(list){
   return html;
 }
 
+function buildGlaceAddons(list, category){
+
+  var html = "";
+
+  for(var i=0;i<list.length;i++){
+
+    let prix = list[i][2] || 0;
+    let orderName = category + " : " + list[i][1];
+
+    html += "<div class='card' onclick=\"toggle(this,'" + orderName + "'," + prix + ")\">";
+    html += "<img src='" + list[i][0] + "'>";
+    html += "<p>" + list[i][1] + "</p></div>";
+  }
+
+  return html;
+}
+
 /* ================= TOGGLE ================= */
 
 function toggle(el,name,price){
@@ -306,7 +344,7 @@ function toggle(el,name,price){
 
     currentOrder = currentOrder.filter(item => item !== name);
 
-    if(name.includes("Boule glace")){
+    if(isBouleDeGlace(name)){
       removeExtraParfums();
     }
 
@@ -318,7 +356,7 @@ function toggle(el,name,price){
 
     currentOrder.push(name);
 
-    if(name.includes("Boule glace")){
+    if(isBouleDeGlace(name)){
       showExtraParfums();
     }
   }
@@ -329,28 +367,44 @@ function toggle(el,name,price){
 
 /* ================= EXTRA PARFUM CREPE ================= */
 
+var crepeParfums = [
+"Vanille de Madagascar",
+"Caramel",
+"Chocolat façon brownies",
+"Guimauve",
+"Mangue",
+"Fraise",
+"Rhum raisin",
+"Café",
+"Pistache",
+"Citron",
+"Parfum du moment"
+];
+
+function isBouleDeGlace(name){
+  return name === "Boule de glace" || name === "Boule glace";
+}
+
+function hasBouleDeGlaceOption(){
+  return currentOrder.some(item => isBouleDeGlace(item));
+}
+
+function getParfumGlaceCrepeItem(name){
+  return "Parfum glace : " + name;
+}
+
+function isParfumGlaceCrepe(item){
+  return item.indexOf("Parfum glace : ") === 0;
+}
+
 function showExtraParfums(){
 
   if(document.getElementById("extraParfum")) return;
 
- var list = [
-  "Vanille de Madagascar",
-  "Caramel",
-  "Chocolat facon brownies",
-  "Guimauve",
-  "Mangue",
-  "Fraise",
-  "Rhum raisin",
-  "Cafe",
-  "Pistache",
-  "Citron",
-  "Parfum du moment"
-];
-
   var html = "<div id='extraParfum'><h3>Parfum</h3><div class='row'>";
 
-  list.forEach(name => {
-    var img = "icon-parfum-glace-" + name.toLowerCase().replace(/ /g,"-") + ".png";
+  crepeParfums.forEach(name => {
+    var img = getParfumImage(name);
 
     html += "<div class='card' onclick=\"selectParfumCrepe(this,'" + name + "')\">";
     html += "<img src='" + img + "'><p>" + name + "</p></div>";
@@ -365,9 +419,7 @@ function removeExtraParfums(){
   var el = document.getElementById("extraParfum");
   if(el) el.remove();
 
-  currentOrder = currentOrder.filter(item =>
-    !["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"].includes(item)
-  );
+  currentOrder = currentOrder.filter(item => !isParfumGlaceCrepe(item));
 }
 
 function selectParfumCrepe(el,name){
@@ -376,11 +428,9 @@ function selectParfumCrepe(el,name){
 
   el.classList.add("selected");
 
-  var parfums = ["Chocolat","Fraise","Vanille","Menthe","Caramel","Noix de coco"];
+  currentOrder = currentOrder.filter(item => !isParfumGlaceCrepe(item));
 
-  currentOrder = currentOrder.filter(item => !parfums.includes(item));
-
-  currentOrder.push(name);
+  currentOrder.push(getParfumGlaceCrepeItem(name));
 
   updateCart();
 }
@@ -451,7 +501,9 @@ function showGlaceFinal(){
 
   var html = "";
   html += "<h3>Parfums</h3><div class='row'>" + buildParfums() + "</div>";
-  html += buildChantilly();
+  html += "<h3>Nappage</h3><div class='row'>" + buildGlaceAddons(nappage, "Nappage") + "</div>";
+  html += "<h3>Topping</h3><div class='row'>" + buildGlaceAddons(topping, "Topping") + "</div>";
+  html += "<h3>Options</h3><div class='row'>" + buildGlaceAddons(optionsGlace, "Option") + "</div>";
 
   document.getElementById("dynamic").innerHTML = html;
 }
@@ -460,29 +512,10 @@ function showGlaceFinal(){
 
 function buildParfums(){
 
- var list = [
-  "Vanille de Madagascar",
-  "Caramel",
-  "Chocolat façon brownies",
-  "Guimauve",
-  "Mangue",
-  "Fraise",
-  "Rhum raisin",
-  "Café",
-  "Pistache",
-  "Citron",
-  "Parfum du moment"
-];
   var html = "";
 
-  list.forEach(name => {
-  var img = "icon-parfum-glace-" +
-  name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/ /g,"-")
-+ ".png";
+  crepeParfums.forEach(name => {
+    var img = getParfumImage(name);
 
     html += "<div class='card' onclick=\"selectParfumGlace(this,'" + name + "')\">";
     html += "<img src='" + img + "'><p>" + name + "</p></div>";
@@ -491,18 +524,31 @@ function buildParfums(){
   return html;
 }
 
+function getParfumImage(name){
+  return "icon-parfum-glace-" +
+    name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ /g,"-")
+    + ".png";
+}
+
 function selectParfumGlace(el,name){
+  var parfumItem = getParfumGlaceCrepeItem(name);
 
   if(el.classList.contains("selected")){
     el.classList.remove("selected");
     bouleCount--;
+    var index = currentOrder.indexOf(parfumItem);
+    if(index > -1) currentOrder.splice(index,1);
   } else {
 
     if(bouleCount >= bouleMax) return;
 
     el.classList.add("selected");
     bouleCount++;
-    currentOrder.push(name);
+    currentOrder.push(parfumItem);
   }
 
   updateCart();
@@ -559,12 +605,14 @@ function buildSimple(list, multi=false){
   var html = "<div class='center'>";
 
   list.forEach(item => {
+    var encodedName = encodeURIComponent(item[1]).replace(/'/g,"%27");
+    var nameArg = "decodeURIComponent('" + encodedName + "')";
 
     if(multi){
-      html += `<div class="card" onclick="toggleSimple('${item[1]}',${item[2]},this)">
+      html += `<div class="card" onclick="toggleSimple(${nameArg},${item[2]},this)">
       <img src="${item[0]}"><p>${item[1]}</p></div>`;
     } else {
-      html += `<div class="card" onclick="selectSimple('${item[1]}',${item[2]},this)">
+      html += `<div class="card" onclick="selectSimple(${nameArg},${item[2]},this)">
       <img src="${item[0]}"><p>${item[1]}</p></div>`;
     }
 
