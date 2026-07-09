@@ -271,7 +271,8 @@ var topping = [
 var options = [
 ["icon-options-banane.png","Morceaux de bananes",1],
 ["icon-options-fraise.png","Morceaux de fraises",1],
-["icon-creme-fouettee.png","Crème fouettée",1]
+["icon-creme-fouettee.png","Crème fouettée",1],
+["icon-options-boule-de-glace.png","Boule de glace",3]
 ];
 
 /* ================= BUILD ================= */
