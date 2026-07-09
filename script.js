@@ -1232,3 +1232,46 @@ if("serviceWorker" in navigator){
     });
   });
 }
+
+if(window.applicationCache){
+  var legacyCacheStatus = document.createElement("div");
+  legacyCacheStatus.style.position = "fixed";
+  legacyCacheStatus.style.right = "8px";
+  legacyCacheStatus.style.bottom = "8px";
+  legacyCacheStatus.style.zIndex = "3000";
+  legacyCacheStatus.style.padding = "6px 10px";
+  legacyCacheStatus.style.borderRadius = "8px";
+  legacyCacheStatus.style.background = "#4CAF50";
+  legacyCacheStatus.style.color = "white";
+  legacyCacheStatus.style.fontSize = "12px";
+  legacyCacheStatus.innerHTML = "Cache iPad...";
+
+  window.addEventListener("load", function(){
+    document.body.appendChild(legacyCacheStatus);
+  });
+
+  window.applicationCache.addEventListener("cached", function(){
+    legacyCacheStatus.innerHTML = "Hors-ligne prêt";
+  });
+
+  window.applicationCache.addEventListener("noupdate", function(){
+    legacyCacheStatus.innerHTML = "Hors-ligne prêt";
+  });
+
+  window.applicationCache.addEventListener("downloading", function(){
+    legacyCacheStatus.innerHTML = "Cache en cours...";
+  });
+
+  window.applicationCache.addEventListener("updateready", function(){
+    if(window.applicationCache.status === window.applicationCache.UPDATEREADY){
+      window.applicationCache.swapCache();
+      window.location.reload();
+    }
+  });
+
+  window.applicationCache.addEventListener("error", function(){
+    legacyCacheStatus.style.background = "#d9534f";
+    legacyCacheStatus.innerHTML = "Cache iPad échec";
+    console.error("Cache hors-ligne ancien iPad non installé");
+  });
+}
