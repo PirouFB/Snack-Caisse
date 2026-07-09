@@ -1,0 +1,12 @@
+/cache.appcache
+  Content-Type: text/cache-manifest
+  Cache-Control: no-cache
+
+/*.html
+  Cache-Control: no-cache
+
+/script.js
+  Cache-Control: no-cache
+
+/style.css
+  Cache-Control: no-cache

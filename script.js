@@ -1233,22 +1233,23 @@ if("serviceWorker" in navigator){
   });
 }
 
-if(window.applicationCache){
-  var legacyCacheStatus = document.createElement("div");
-  legacyCacheStatus.style.position = "fixed";
-  legacyCacheStatus.style.right = "8px";
-  legacyCacheStatus.style.bottom = "8px";
-  legacyCacheStatus.style.zIndex = "3000";
-  legacyCacheStatus.style.padding = "6px 10px";
-  legacyCacheStatus.style.borderRadius = "8px";
-  legacyCacheStatus.style.background = "#4CAF50";
-  legacyCacheStatus.style.color = "white";
-  legacyCacheStatus.style.fontSize = "12px";
-  legacyCacheStatus.innerHTML = "Cache iPad...";
+var legacyCacheStatus = document.createElement("div");
+legacyCacheStatus.style.position = "fixed";
+legacyCacheStatus.style.right = "8px";
+legacyCacheStatus.style.bottom = "8px";
+legacyCacheStatus.style.zIndex = "3000";
+legacyCacheStatus.style.padding = "6px 10px";
+legacyCacheStatus.style.borderRadius = "8px";
+legacyCacheStatus.style.background = "#4CAF50";
+legacyCacheStatus.style.color = "white";
+legacyCacheStatus.style.fontSize = "12px";
+legacyCacheStatus.innerHTML = window.applicationCache ? "Cache iPad..." : "Cache iPad incompatible";
 
-  window.addEventListener("load", function(){
-    document.body.appendChild(legacyCacheStatus);
-  });
+window.addEventListener("load", function(){
+  document.body.appendChild(legacyCacheStatus);
+});
+
+if(window.applicationCache){
 
   window.applicationCache.addEventListener("cached", function(){
     legacyCacheStatus.innerHTML = "Hors-ligne prêt";
@@ -1264,6 +1265,7 @@ if(window.applicationCache){
 
   window.applicationCache.addEventListener("updateready", function(){
     if(window.applicationCache.status === window.applicationCache.UPDATEREADY){
+      legacyCacheStatus.innerHTML = "Cache mis à jour";
       window.applicationCache.swapCache();
       window.location.reload();
     }

@@ -1,8 +1,7 @@
 CACHE MANIFEST
-# La Vague Sucree - ancien iPad - 2026-07-09-v2
+# La Vague Sucree - ancien iPad - 2026-07-09-v3
 
 CACHE:
-./
 index.html
 style.css
 script.js
@@ -72,6 +71,3 @@ icon-panini-vegan.png
 
 NETWORK:
 *
-
-FALLBACK:
-./ index.html
